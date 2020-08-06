@@ -33,6 +33,7 @@ app.use(
       maxAge: 1000 * 60 * 15,
       httpOnly: true,
       secure: false,
+      //signed:true옵션을 주든 말든 '세션 쿠키'를 암호화한다.
     },
   })
 );
