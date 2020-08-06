@@ -7,12 +7,12 @@ const router = express.Router();
 
 router.post("/join", async (req, res, next) => {
   const schema = joi.object().keys({
-    email: joi.string().required(),
-    nick: joi.string().required(),
-    name: joi.string().required(),
-    password: joi.string().required(),
-    address: joi.string(),
-    phone: joi.string(),
+    email: joi.string().max(40).required(),
+    nick: joi.string().max(20).required(),
+    name: joi.string().max(20).required(),
+    password: joi.string().max(100).required(),
+    address: joi.string().max(100),
+    phone: joi.string().max(11),
   });
 
   const result = schema.validate(req.body);
@@ -39,6 +39,29 @@ router.post("/join", async (req, res, next) => {
     const data = { id: user.id, nick: user.nick };
 
     return res.json(data);
+  } catch (error) {
+    return next(error);
+  }
+});
+
+router.post("/nick", async (req, res, next) => {
+  const schema = joi.object().keys({
+    nick: joi.string().max(20).required(),
+  });
+
+  const result = schema.validate(req.body);
+  if (result.error) {
+    return res.status(400).send(result.error);
+  }
+
+  const { nick } = req.body;
+  try {
+    const exNick = await User.findOne({ where: { nick } });
+    if (exNick) {
+      return res.status(409).send("이미 사용 중 입니다.");
+    } else {
+      return res.send("사용 가능합니다.");
+    }
   } catch (error) {
     return next(error);
   }
