@@ -3,16 +3,20 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 const session = require("express-session");
+const passport = require("passport");
 require("dotenv").config();
 
 const { sequelize } = require("./models");
-
-const authRouter = require("./routes/auth");
+const passportConfig = require("./passport");
 
 const app = express();
 sequelize.sync();
+passportConfig(passport);
 
 app.set("port", process.env.PORT || 9090);
+
+const jwtMiddleware = require("./lib/jwtMiddleware");
+const authRouter = require("./routes/auth");
 
 app.use(morgan("dev"));
 app.use(express.static(path.join(__dirname, "public")));
@@ -25,11 +29,15 @@ app.use(
     saveUninitialized: false,
     secret: process.env.COOKIE_SECRET,
     cookie: {
+      //세션에 저장되어 있는 정보를 불러오기 위한 세션id 쿠키의 옵션
+      maxAge: 1000 * 60 * 15,
       httpOnly: true,
       secure: false,
     },
   })
 );
+app.use(passport.initialize());
+app.use(jwtMiddleware);
 
 app.use("/auth", authRouter);
 
