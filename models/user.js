@@ -15,13 +15,9 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         unique: true,
       },
-      name: {
-        type: DataTypes.STRING(20),
-        allowNull: false,
-      },
       hashedPassword: {
         type: DataTypes.STRING(100),
-        allowNull: false,
+        allowNull: true,
       },
       address: {
         type: DataTypes.STRING(100),
@@ -31,6 +27,15 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(11),
         allowNull: true,
         unique: true,
+      },
+      provider: {
+        type: DataTypes.STRING(10),
+        allowNull: false,
+        defaultValue: "local",
+      },
+      snsId: {
+        type: DataTypes.STRING(30),
+        allowNull: true,
       },
     },
     {
@@ -54,7 +59,6 @@ module.exports = (sequelize, DataTypes) => {
     const token = jwt.sign(
       {
         id: this.id,
-        nick: this.nick,
       },
       process.env.JWT_SECRET,
       {
@@ -69,6 +73,9 @@ module.exports = (sequelize, DataTypes) => {
   };
   User.findByNick = function (nick) {
     return this.findOne({ where: { nick } });
+  };
+  User.findBySns = function (profileId, provider) {
+    return this.findOne({ where: { snsId: profileId, provider } });
   };
 
   return User;

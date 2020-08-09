@@ -6,7 +6,6 @@ const Register = async (req, res, next) => {
   const schema = joi.object().keys({
     email: joi.string().max(40).required(),
     nick: joi.string().max(20).required(),
-    name: joi.string().max(20).required(),
     password: joi.string().max(100).required(),
     address: joi.string().max(100),
     phone: joi.string().max(11),
@@ -17,7 +16,7 @@ const Register = async (req, res, next) => {
     return res.status(400).send(result.error);
   }
 
-  const { email, nick, name, password, address, phone } = req.body;
+  const { email, nick, password, address, phone } = req.body;
   try {
     const exUser = await User.findByEmail(email);
     if (exUser) {
@@ -27,7 +26,6 @@ const Register = async (req, res, next) => {
     const user = User.build({
       email,
       nick,
-      name,
       address,
       phone,
     });
