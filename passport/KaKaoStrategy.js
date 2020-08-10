@@ -7,20 +7,21 @@ module.exports = (passport) => {
     new KaKaoStrategy(
       {
         clientID: process.env.KAKAO_ID,
-        callbackURL: "/auth/kakao",
+        callbackURL: "/auth/kakao/callback",
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
           const exUser = await User.findBySns(profile.id, "kakao");
           if (exUser) {
-            const token = exUser.generateToken();
+            /*const token = exUser.generateToken();
             const data = exUser.serialize();
 
-            done(null, { token, data });
+            done(null, { token, data });*/
+            done(null, exUser);
           } else {
-            const newUser = User.create({
-              email: profile._json && profile._json.kaccount_email,
-              nick: profile.displayName,
+            const newUser = await User.create({
+              email: profile._json && profile._json.kakao_account.email,
+              nick: profile._json && profile._json.properties.nickname,
               snsId: profile.id,
               provider: "kakao",
             });
