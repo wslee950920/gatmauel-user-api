@@ -38,7 +38,7 @@ app.use(
   })
 );
 app.use(passport.initialize());
-app.use(passport.session());
+//app.use(passport.session());
 app.use(jwtMiddleware);
 
 app.use("/auth", authRouter);

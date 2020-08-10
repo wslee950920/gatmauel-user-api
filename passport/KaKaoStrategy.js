@@ -13,11 +13,11 @@ module.exports = (passport) => {
         try {
           const exUser = await User.findBySns(profile.id, "kakao");
           if (exUser) {
-            /*const token = exUser.generateToken();
+            const token = exUser.generateToken();
             const data = exUser.serialize();
 
-            done(null, { token, data });*/
-            done(null, exUser);
+            done(null, { token, data });
+            //done(null, exUser);
           } else {
             const newUser = await User.create({
               email: profile._json && profile._json.kakao_account.email,
@@ -25,8 +25,10 @@ module.exports = (passport) => {
               snsId: profile.id,
               provider: "kakao",
             });
+            const token = newUser.generateToken();
+            const data = newUser.serialize();
 
-            done(null, newUser);
+            done(null, { token, data });
           }
         } catch (error) {
           console.error(error);

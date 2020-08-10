@@ -16,8 +16,6 @@ router.get("/check", isLoggedIn, Check);
 router.post("/login", isNotLoggedIn, Login);
 router.get("/logout", isLoggedIn, Logout);
 router.get("/kakao", kakao);
-router.get("/kakao/callback", kakaoCallback, (req, res) => {
-  res.redirect("/");
-});
+router.get("/kakao/callback", kakaoCallback);
 
 module.exports = router;

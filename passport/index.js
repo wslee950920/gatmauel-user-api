@@ -3,7 +3,7 @@ const kakao = require("./KaKaoStrategy");
 const { User } = require("../models");
 
 module.exports = (passport) => {
-  passport.serializeUser((user, done) => {
+  /*passport.serializeUser((user, done) => {
     console.log("serialize");
 
     done(null, user.id);
@@ -12,12 +12,9 @@ module.exports = (passport) => {
     console.log("deserialize");
 
     User.findByPk(id)
-      .then((user) => {
-        console.log(user);
-        done(null, user);
-      })
+      .then((user) => done(null, user))
       .catch((err) => done(err));
-  });
+  });*/
 
   local(passport);
   kakao(passport);
