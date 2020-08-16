@@ -17,6 +17,7 @@ app.set("port", process.env.PORT || 9090);
 
 const jwtMiddleware = require("./lib/jwtMiddleware");
 const authRouter = require("./routes/auth");
+const reviewRouter = require("./routes/review");
 
 app.use(morgan("dev"));
 app.use(express.static(path.join(__dirname, "public")));
@@ -33,7 +34,7 @@ app.use(
       maxAge: 1000 * 60 * 15,
       httpOnly: true,
       secure: false,
-      //signed:true옵션을 주든 말든 '세션 쿠키'를 암호화한다.
+      //signed:true옵션을 주든 말든 '세션 쿠키'에 서명한다.
     },
   })
 );
@@ -42,6 +43,7 @@ app.use(passport.initialize());
 app.use(jwtMiddleware);
 
 app.use("/auth", authRouter);
+app.use("/review", reviewRouter);
 app.use("/", (req, res, next) => {
   res.end("root directory");
 });

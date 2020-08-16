@@ -27,7 +27,7 @@ const Login = (req, res, next) => {
           //req.signedCookies에서 봤을 땐 변화가 없지만 클라에서 보면 서명이 돼있다.
           signed: true,
         })
-        .send(result.data);
+        .json(result.data);
     });
   })(req, res, next);
 };
