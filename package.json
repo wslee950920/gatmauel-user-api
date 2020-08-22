@@ -10,7 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "aws-cloudfront-sign": "^2.2.0",
     "aws-sdk": "^2.734.0",
     "bcrypt": "^5.0.0",
     "cookie-parser": "^1.4.5",

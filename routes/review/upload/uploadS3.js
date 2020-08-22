@@ -14,7 +14,12 @@ const uploadS3 = multer({
     s3: new aws.S3(),
     bucket: "gatmauel",
     key(req, file, cb) {
-      cb(null, `original/${+new Date()}${path.basename(file.originalname)}`);
+      cb(
+        null,
+        `original/${+new Date()}${path.basename(
+          file.originalname.replace(/(\s*)/g, "")
+        )}`
+      );
     },
   }),
   limits: { fileSize: 5 * 1024 * 1024 },

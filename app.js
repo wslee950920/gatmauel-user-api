@@ -42,10 +42,10 @@ app.use(passport.initialize());
 //app.use(passport.session());
 app.use(jwtMiddleware);
 
-app.use("/auth", authRouter);
-app.use("/review", reviewRouter);
-app.use("/", (req, res, next) => {
-  res.end("root directory");
+app.use("/api/auth", authRouter);
+app.use("/api/review", reviewRouter);
+app.use("/api", (req, res, next) => {
+  res.end("api root directory");
 });
 
 app.use((req, res, next) => {

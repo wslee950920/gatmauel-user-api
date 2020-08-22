@@ -7,6 +7,6 @@ const upload = require("../review/upload");
 
 const router = express.Router();
 
-router.post("/img", isLoggedIn, uploadS3.single("img"), upload);
+router.post("/img", isLoggedIn, uploadS3.array("img"), upload);
 
 module.exports = router;
