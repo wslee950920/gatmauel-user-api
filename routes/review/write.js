@@ -4,9 +4,8 @@ const { Review } = require("../../models");
 
 module.exports = async (req, res, next) => {
   const schema = joi.object().keys({
-    nick: joi.string().max(20).required(),
     content: joi.string().required(),
-    img: joi.string().max(200),
+    img: joi.string().max(300),
   });
 
   const result = schema.validate(req.body);
@@ -14,12 +13,18 @@ module.exports = async (req, res, next) => {
     return res.status(400).send(result.error);
   }
 
-  const { nick, content, img } = req.body;
+  const { content, img } = req.body;
   try {
     const review = await Review.create({
-      nick,
+      nick: req.user.nick,
       content,
       img,
+      userId: req.user.id,
     });
-  } catch (error) {}
+
+    res.send(review);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
 };

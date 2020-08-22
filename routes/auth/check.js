@@ -26,7 +26,7 @@ exports.CheckNick = async (req, res, next) => {
 };
 
 exports.Check = (req, res, next) => {
-  const user = req.body.state;
+  const user = req.user;
 
   if (!user) {
     return res.status(403).send("로그인이 필요합니다.");

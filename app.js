@@ -45,7 +45,7 @@ app.use(jwtMiddleware);
 app.use("/api/auth", authRouter);
 app.use("/api/review", reviewRouter);
 app.use("/api", (req, res, next) => {
-  res.end("api root directory");
+  res.send("api root directory");
 });
 
 app.use((req, res, next) => {

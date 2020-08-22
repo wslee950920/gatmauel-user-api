@@ -59,6 +59,7 @@ module.exports = (sequelize, DataTypes) => {
     const token = jwt.sign(
       {
         id: this.id,
+        nick: this.nick,
       },
       process.env.JWT_SECRET,
       {
