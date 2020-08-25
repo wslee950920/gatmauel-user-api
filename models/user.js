@@ -39,7 +39,8 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
-      timestamps: false,
+      timestamps: true,
+      paranoid: true,
     }
   );
 
@@ -70,10 +71,10 @@ module.exports = (sequelize, DataTypes) => {
     return token;
   };
   User.findByEmail = function (email) {
-    return this.findOne({ where: { email } });
+    return this.findOne({ where: { email }, paranoid: false });
   };
   User.findByNick = function (nick) {
-    return this.findOne({ where: { nick } });
+    return this.findOne({ where: { nick }, paranoid: false });
   };
   User.findBySns = function (profileId, provider) {
     return this.findOne({ where: { snsId: profileId, provider } });

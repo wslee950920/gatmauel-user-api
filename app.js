@@ -8,10 +8,12 @@ require("dotenv").config();
 
 const { sequelize } = require("./models");
 const passportConfig = require("./passport");
+const checkDelete = require("./lib/checkDelete");
 
 const app = express();
 sequelize.sync();
 passportConfig(passport);
+checkDelete();
 
 app.set("port", process.env.PORT || 9090);
 
