@@ -19,7 +19,7 @@ module.exports = async (req, res, next) => {
       { where: { id } }
     );
     if (review[0] == 0) {
-      return res.status(404).send("리뷰를 찾을 수 없습니다.");
+      return res.status(404).send("조건에 맞는 리뷰를 찾을 수 없습니다.");
     }
 
     res.send(review);

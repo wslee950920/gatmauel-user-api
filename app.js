@@ -62,6 +62,4 @@ app.use((err, req, res) => {
   res.send(error);
 });
 
-app.listen(app.get("port"), () => {
-  console.log(`Example app listening at http://localhost:${app.get("port")}`);
-});
+app.listen(app.get("port"));
