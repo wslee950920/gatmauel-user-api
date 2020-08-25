@@ -21,6 +21,8 @@ exports.CheckNick = async (req, res, next) => {
       return res.send("사용 가능합니다.");
     }
   } catch (error) {
+    console.error(error);
+
     return next(error);
   }
 };
@@ -31,6 +33,6 @@ exports.Check = (req, res, next) => {
   if (!user) {
     return res.status(403).send("로그인이 필요합니다.");
   } else {
-    return res.send(user);
+    return res.json(user);
   }
 };

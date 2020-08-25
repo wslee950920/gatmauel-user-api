@@ -13,7 +13,7 @@ const Login = (req, res, next) => {
 
     return req.login(result, { session: false }, (loginError) => {
       if (loginError) {
-        console.log(loginError);
+        console.error(loginError);
 
         return next(loginError);
       }

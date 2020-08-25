@@ -44,6 +44,8 @@ const Register = async (req, res, next) => {
       })
       .json(user.serialize());
   } catch (error) {
+    console.error(error);
+
     return next(error);
   }
 };

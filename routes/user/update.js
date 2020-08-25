@@ -1,11 +1,12 @@
-const { Review } = require("../../models");
 const joi = require("joi");
 
-module.exports = async (req, res, next) => {
-  const { id } = req.params;
+const { User } = require("../../models");
 
+module.exports = async (req, res, next) => {
   const schema = joi.object().keys({
-    content: joi.string(),
+    nick: joi.string().max(20),
+    address: joi.string().max(100),
+    phone: joi.string().max(11),
   });
 
   const result = schema.validate(req.body);
@@ -14,17 +15,14 @@ module.exports = async (req, res, next) => {
   }
 
   try {
-    const num = await Review.update(
-      { content: req.body.content },
-      { where: { id } }
-    );
+    const num = await User.update(req.body, { where: { id: req.user.id } });
     if (num[0] == 0) {
-      return res.status(404).send("조건에 맞는 리뷰를 찾을 수 없습니다.");
+      return res.status(404).send("조건에 맞는 유저를 찾을 수 없습니다.");
     } else if (num[0] > 1) {
       throw new Error(`${num[0]}개의 열이 수정됨`);
     }
 
-    res.end(n);
+    res.end();
   } catch (e) {
     console.error(e);
 

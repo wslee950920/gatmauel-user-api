@@ -22,7 +22,7 @@ module.exports = async (req, res, next) => {
       userId: req.user.id,
     });
 
-    res.send(review);
+    res.json(review);
   } catch (error) {
     console.error(error);
     next(error);

@@ -13,7 +13,7 @@ module.exports = async (req, res, next) => {
       offset: (page - 1) * 10,
     });
 
-    res.set("Last-Page", reviews.count).send(reviews.rows);
+    res.set("Last-Page", reviews.count).json(reviews.rows);
   } catch (error) {
     console.error(error);
 

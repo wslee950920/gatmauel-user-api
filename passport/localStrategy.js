@@ -20,7 +20,7 @@ module.exports = (passport) => {
 
               done(null, { token, data });
             } else {
-              done(null, false, { message: "비밀번호가 일치하지 않습니다." });
+              done(null, false, { message: "잘못된 비밀번호입니다." });
             }
           } else {
             done(null, false, { message: "가입되지 않은 회원입니다." });
