@@ -1,10 +1,10 @@
-const { Review } = require("../../models");
+const { Comment } = require("../../models");
 
 module.exports = async (req, res, next) => {
   const { id } = req.params;
 
   try {
-    const num = await Review.update(
+    const num = await Comment.update(
       { content: req.body.content },
       { where: { id } }
     );

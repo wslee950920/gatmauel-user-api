@@ -15,6 +15,7 @@ module.exports = async (req, res, next) => {
         model: Comment,
         attributes: ["id", "nick", "content", "createdAt"],
       },
+      where: { userId: req.user.id },
     });
 
     res.set("Last-Page", reviews.count).json(reviews.rows);

@@ -11,6 +11,7 @@ const list = require("./list");
 const read = require("./read");
 const remove = require("./remove");
 const update = require("./update");
+const user = require("./user");
 
 const router = express.Router();
 
@@ -20,5 +21,6 @@ router.get("/list", list);
 router.get("/read/:id", getReviewById, read);
 router.delete("/remove/:id", isLoggedIn, getReviewById, checkOwnReview, remove);
 router.patch("/update/:id", isLoggedIn, getReviewById, checkOwnReview, update);
+router.get("/user", isLoggedIn, user);
 
 module.exports = router;

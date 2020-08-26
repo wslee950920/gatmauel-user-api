@@ -1,4 +1,4 @@
-const { Review, Comment } = require("../../models");
+const { Comment } = require("../../models");
 
 module.exports = async (req, res, next) => {
   const page = parseInt(req.query.page || "1", 10);
@@ -7,17 +7,14 @@ module.exports = async (req, res, next) => {
   }
 
   try {
-    const reviews = await Review.findAndCountAll({
+    const comments = await Comment.findAndCountAll({
       order: [["createdAt", "DESC"]],
       limit: 10,
       offset: (page - 1) * 10,
-      include: {
-        model: Comment,
-        attributes: ["id", "nick", "content", "createdAt"],
-      },
+      where: { userId: req.user.id },
     });
 
-    res.set("Last-Page", reviews.count).json(reviews.rows);
+    res.set("Last-Page", comments.count).json(comments.rows);
   } catch (error) {
     console.error(error);
 

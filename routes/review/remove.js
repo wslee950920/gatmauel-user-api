@@ -1,14 +1,20 @@
-const { Review } = require("../../models");
+const { Review, sequelize, Comment } = require("../../models");
 
 module.exports = async (req, res, next) => {
   const { id } = req.params;
 
+  const t = await sequelize.transaction();
   try {
-    await Review.destroy({ where: { id } });
+    await Comment.destroy({ where: { reviewId: id }, transaction: t });
+    await Review.destroy({ where: { id }, transaction: t });
+
+    await t.commit();
 
     res.status(204).end();
   } catch (e) {
     console.error(e);
+
+    await t.rollback();
 
     next(e);
   }

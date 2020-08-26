@@ -4,7 +4,7 @@ const { Comment } = require("../../models");
 
 module.exports = async (req, res, next) => {
   const schema = joi.object().keys({
-    id: joi.number().required(),
+    reviewId: joi.number().required(),
     content: joi.string().required(),
   });
   const result = schema.validate(req.body);
@@ -12,13 +12,13 @@ module.exports = async (req, res, next) => {
     return res.status(400).send(result.error);
   }
 
-  const { id, content } = req.body;
+  const { reviewId, content } = req.body;
   try {
     const comment = await Comment.create({
       nick: req.user.nick,
       content,
       userId: req.user.id,
-      reviewId: id,
+      reviewId,
     });
 
     res.json(comment);
