@@ -68,4 +68,6 @@ app.use((err, req, res) => {
   res.send(error);
 });
 
-app.listen(app.get("port"));
+app.listen(app.get("port"), () => {
+  console.log("port", app.get("port"));
+});
