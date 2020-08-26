@@ -1,14 +1,21 @@
 const schedule = require("node-schedule");
 
-const { User } = require("../../models");
+const { User, sequelize, Review } = require("../../models");
 
 module.exports = async (req, res, next) => {
   const { id } = req.user;
   const end = new Date();
   end.setDate(end.getDate() + 7);
 
+  const t = await sequelize.transaction();
   try {
-    await User.destroy({ where: { id } });
+    await Review.update(
+      { nick: "(알 수 없음)" },
+      { where: { userId: id }, transaction: t }
+    );
+    await User.destroy({ where: { id }, transaction: t });
+
+    await t.commit();
 
     schedule.scheduleJob(end, async () => {
       await User.destroy({ where: { id }, force: true });
@@ -17,6 +24,8 @@ module.exports = async (req, res, next) => {
     res.redirect("/api/auth/logout");
   } catch (e) {
     console.error(e);
+
+    await t.rollback();
 
     next(e);
   }
