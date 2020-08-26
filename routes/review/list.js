@@ -1,4 +1,4 @@
-const { Review } = require("../../models");
+const { Review, Comment } = require("../../models");
 
 module.exports = async (req, res, next) => {
   const page = parseInt(req.query.page || "1", 10);
@@ -11,6 +11,10 @@ module.exports = async (req, res, next) => {
       order: [["createdAt", "DESC"]],
       limit: 10,
       offset: (page - 1) * 10,
+      include: {
+        model: Comment,
+        attributes: ["nick", "content", "createdAt"],
+      },
     });
 
     res.set("Last-Page", reviews.count).json(reviews.rows);

@@ -44,6 +44,9 @@ db.Review.belongsTo(db.User, { onDelete: "SET NULL" });
 db.Review.hasMany(db.Comment, { foreignKey: { allowNull: false } });
 db.Comment.belongsTo(db.Review, { foreignKey: { allowNull: false } });
 
+db.User.hasMany(db.Review, { onDelete: "SET NULL" });
+db.Comment.belongsTo(db.User, { onDelete: "SET NULL" });
+
 const OrderDetail = sequelize.define(
   "OrderDetail",
   {},

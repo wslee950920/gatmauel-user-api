@@ -17,7 +17,6 @@ module.exports = (passport) => {
             const data = exUser.serialize();
 
             done(null, { token, data });
-            //done(null, exUser);
           } else {
             const newUser = await User.create({
               email: profile._json && profile._json.kakao_account.email,

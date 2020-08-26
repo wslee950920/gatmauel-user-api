@@ -1,5 +1,5 @@
 const joi = require("joi");
-const { Review } = require("../../../models");
+const { Review, Comment } = require("../../../models");
 
 module.exports = async (req, res, next) => {
   const { id } = req.params;
@@ -13,7 +13,13 @@ module.exports = async (req, res, next) => {
   }
 
   try {
-    const review = await Review.findByPk(id);
+    const review = await Review.findOne({
+      where: { id },
+      include: {
+        model: Comment,
+        attributes: ["nick", "content", "createdAt"],
+      },
+    });
     if (!review) {
       return res.status(404).send("찾으시는 리뷰가 없습니다!");
     }

@@ -21,6 +21,7 @@ const jwtMiddleware = require("./lib/jwtMiddleware");
 const authRouter = require("./routes/auth");
 const reviewRouter = require("./routes/review");
 const userRouter = require("./routes/user");
+const commentRouter = require("./routes/comment");
 
 app.use(morgan("dev"));
 app.use(express.static(path.join(__dirname, "public")));
@@ -48,6 +49,7 @@ app.use(jwtMiddleware);
 app.use("/api/auth", authRouter);
 app.use("/api/review", reviewRouter);
 app.use("/api/user", userRouter);
+app.use("/api/comment", commentRouter);
 app.use("/api", (req, res, next) => {
   res.send("api root directory");
 });
