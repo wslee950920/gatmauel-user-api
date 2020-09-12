@@ -16,12 +16,12 @@ module.exports = async (req, res, next) => {
 
   const { oldPassword, newPassword } = req.body;
   try {
-    const exUser = await User.findByPk(req.user.id);
+    const exUser = await User.findByPk(res.locals.user.id);
     if (exUser) {
       const result = await exUser.checkPassword(oldPassword);
       if (result) {
       } else {
-        return res.status(401).send("잘못된 비밀번호입니다.");
+        return res.status(401).send("틀린 비밀번호입니다.");
       }
 
       const hashed = await bcrypt.hash(newPassword, 12);

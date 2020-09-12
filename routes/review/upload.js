@@ -9,14 +9,14 @@ aws.config.update({
   region: "ap-northeast-2",
 });
 
-const uploadS3 = multer({
+const upload = multer({
   storage: multerS3({
     s3: new aws.S3(),
     bucket: "gatmauel",
     key(req, file, cb) {
       cb(
         null,
-        `original/${+new Date()}${path.basename(
+        `original/${res.locals.user.id}/${+new Date()}_${path.basename(
           file.originalname.replace(/(\s*)/g, "")
         )}`
       );
@@ -25,4 +25,4 @@ const uploadS3 = multer({
   limits: { fileSize: 5 * 1024 * 1024 },
 });
 
-module.exports = uploadS3;
+module.exports = upload;

@@ -1,5 +1,5 @@
 module.exports = (req, res, next) => {
-  const user = req.user;
+  const user = res.locals.user;
   const review = req.review;
 
   if (review.userId !== user.id) {

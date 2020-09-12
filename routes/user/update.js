@@ -15,7 +15,9 @@ module.exports = async (req, res, next) => {
   }
 
   try {
-    const num = await User.update(req.body, { where: { id: req.user.id } });
+    const num = await User.update(req.body, {
+      where: { id: res.locals.user.id },
+    });
     if (num[0] == 0) {
       return res.status(404).send("조건에 맞는 유저를 찾을 수 없습니다.");
     } else if (num[0] > 1) {

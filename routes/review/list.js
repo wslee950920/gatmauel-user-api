@@ -13,7 +13,7 @@ module.exports = async (req, res, next) => {
       offset: (page - 1) * 10,
       include: {
         model: Comment,
-        attributes: ["id", "nick", "content", "createdAt"],
+        attributes: ["id", "nick", "content", "createdAt", "userId"],
       },
     });
 

@@ -5,7 +5,6 @@ const { Review } = require("../../models");
 module.exports = async (req, res, next) => {
   const schema = joi.object().keys({
     content: joi.string().required(),
-    img: joi.string().max(300),
   });
 
   const result = schema.validate(req.body);
@@ -13,13 +12,18 @@ module.exports = async (req, res, next) => {
     return res.status(400).send(result.error);
   }
 
-  const { content, img } = req.body;
+  const { content } = req.body;
+  const imgs = req.files;
   try {
+    const keys = await imgs.map((img) => {
+      return img.key.replace("original", "resized", 1).replace(/(\s*)/g, "");
+    });
+
     const review = await Review.create({
-      nick: req.user.nick,
+      nick: res.locals.user.nick,
       content,
-      img,
-      userId: req.user.id,
+      imgs: keys.join("|"),
+      userId: res.locals.user.id,
     });
 
     res.json(review);

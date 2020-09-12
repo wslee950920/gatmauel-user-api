@@ -7,17 +7,21 @@ module.exports = async (req, res, next) => {
     reviewId: joi.number().required(),
     content: joi.string().required(),
   });
-  const result = schema.validate(req.body);
+  const result = schema.validate({
+    reviewId: req.params.id,
+    content: req.body.content,
+  });
   if (result.error) {
     return res.status(400).send(result.error);
   }
 
-  const { reviewId, content } = req.body;
+  const { content } = req.body;
+  const { reviewId } = req.params;
   try {
     const comment = await Comment.create({
-      nick: req.user.nick,
+      nick: res.locals.user.nick,
       content,
-      userId: req.user.id,
+      userId: res.locals.user.id,
       reviewId,
     });
 

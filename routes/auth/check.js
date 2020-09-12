@@ -28,7 +28,7 @@ exports.CheckNick = async (req, res, next) => {
 };
 
 exports.Check = (req, res, next) => {
-  const user = req.user;
+  const user = res.locals.user;
 
   if (!user) {
     return res.status(403).send("로그인이 필요합니다.");

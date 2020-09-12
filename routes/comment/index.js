@@ -11,7 +11,7 @@ const list = require("./list");
 
 const router = express.Router();
 
-router.post("/write", isLoggedIn, write);
+router.post("/write/:id", isLoggedIn, write);
 router.delete("/remove/:id", isLoggedIn, getCommentById, checkOwnComm, remove);
 router.patch("/update/:id", isLoggedIn, getCommentById, checkOwnComm, update);
 router.get("/list", isLoggedIn, list);

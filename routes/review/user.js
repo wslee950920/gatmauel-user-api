@@ -13,9 +13,9 @@ module.exports = async (req, res, next) => {
       offset: (page - 1) * 10,
       include: {
         model: Comment,
-        attributes: ["id", "nick", "content", "createdAt"],
+        attributes: ["id", "nick", "content", "createdAt", "userId"],
       },
-      where: { userId: req.user.id },
+      where: { userId: res.locals.user.id },
     });
 
     res.set("Last-Page", reviews.count).json(reviews.rows);

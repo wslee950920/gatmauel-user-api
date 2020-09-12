@@ -11,7 +11,7 @@ module.exports = async (req, res, next) => {
       order: [["createdAt", "DESC"]],
       limit: 10,
       offset: (page - 1) * 10,
-      where: { userId: req.user.id },
+      where: { userId: res.locals.user.id },
     });
 
     res.set("Last-Page", comments.count).json(comments.rows);

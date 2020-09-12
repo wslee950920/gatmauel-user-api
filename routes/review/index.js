@@ -1,6 +1,5 @@
 const express = require("express");
 
-const uploadS3 = require("./upload/uploadS3");
 const { isLoggedIn } = require("../../lib/loginMiddleware");
 const getReviewById = require("./mid/getReviewById");
 const checkOwnReview = require("./mid/checkOwnReview");
@@ -15,8 +14,7 @@ const user = require("./user");
 
 const router = express.Router();
 
-router.post("/img", isLoggedIn, uploadS3.array("img"), upload);
-router.post("/write", isLoggedIn, write);
+router.post("/write", isLoggedIn, upload.array("imgs"), write);
 router.get("/list", list);
 router.get("/read/:id", getReviewById, read);
 router.delete("/remove/:id", isLoggedIn, getReviewById, checkOwnReview, remove);
