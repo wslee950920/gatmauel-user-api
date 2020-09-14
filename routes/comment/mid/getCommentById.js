@@ -19,7 +19,7 @@ module.exports = async (req, res, next) => {
     if (!comment) {
       return res.status(404).send("찾으시는 리뷰가 없습니다!");
     }
-    req.comm = comment;
+    res.locals.comm = comment;
 
     return next();
   } catch (e) {
