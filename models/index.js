@@ -26,6 +26,7 @@ db.Order = require("./order")(sequelize, Sequelize);
 db.Review = require("./review")(sequelize, Sequelize);
 db.Comment = require("./comment")(sequelize, Sequelize);
 db.Detail = require("./detail")(sequelize, Sequelize);
+db.Notice = require("./notice")(sequelize, Sequelize);
 
 db.User.hasMany(db.Order, {
   foreignKey: { name: "customerId" },

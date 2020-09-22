@@ -10,6 +10,11 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         unique: true,
       },
+      email_verified: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        default: false,
+      },
       nick: {
         type: DataTypes.STRING(20),
         allowNull: false,
@@ -27,6 +32,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(11),
         allowNull: true,
         unique: true,
+      },
+      phone_verified: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        default: false,
       },
       provider: {
         type: DataTypes.STRING(10),

@@ -5,7 +5,7 @@ const { User, sequelize, Review, Comment } = require("../../models");
 module.exports = async (req, res, next) => {
   const { id } = res.locals.user;
   const end = new Date();
-  end.setDate(end.getDate() + 7);
+  end.setDate(end.getDate() + 30);
 
   const t = await sequelize.transaction();
   try {
