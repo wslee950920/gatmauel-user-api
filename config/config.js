@@ -4,7 +4,7 @@ module.exports = {
   development: {
     username: process.env.SEQUELIZE_DEV_USERNAME,
     password: process.env.SEQUELIZE_DEV_PASSWORD,
-    database: "gatmauel_test",
+    database: "gatmauel_develop",
     host: "gatmauelDB",
     dialect: "mysql",
   },

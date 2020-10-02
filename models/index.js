@@ -27,6 +27,7 @@ db.Review = require("./review")(sequelize, Sequelize);
 db.Comment = require("./comment")(sequelize, Sequelize);
 db.Detail = require("./detail")(sequelize, Sequelize);
 db.Notice = require("./notice")(sequelize, Sequelize);
+db.Hashtag = require("./hashtag")(sequelize, Sequelize);
 
 db.User.hasMany(db.Order, {
   foreignKey: { name: "customerId" },
@@ -47,6 +48,9 @@ db.Comment.belongsTo(db.Review, { foreignKey: { allowNull: false } });
 
 db.User.hasMany(db.Review, { onDelete: "SET NULL" });
 db.Comment.belongsTo(db.User, { onDelete: "SET NULL" });
+
+db.Hashtag.belongsToMany(db.Review, { through: "ReviewHashtag" });
+db.Review.belongsToMany(db.Hashtag, { through: "ReviewHashtag" });
 
 const OrderDetail = sequelize.define(
   "OrderDetail",

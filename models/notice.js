@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) =>
       nick: {
         type: DataTypes.STRING(20),
         allowNull: false,
-        default: "사장님",
+        defaultValue: "사장님",
       },
       title: {
         type: DataTypes.STRING(100),

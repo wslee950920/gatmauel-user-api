@@ -1,6 +1,6 @@
 const joi = require("joi");
 
-const { Review } = require("../../models");
+const { Review, Hashtag } = require("../../models");
 
 module.exports = async (req, res, next) => {
   const schema = joi.object().keys({
@@ -25,6 +25,17 @@ module.exports = async (req, res, next) => {
       imgs: keys.join("|"),
       userId: res.locals.user.id,
     });
+    const hashtags = content.match(/#[^\s]*/g);
+    if (hashtags) {
+      const result = await Promise.all(
+        hashtags.map((tag) =>
+          Hashtag.findOrCreate({
+            where: { title: tag.slice(1).toLowerCase() },
+          })
+        )
+      );
+      await review.addHashtags(result.map((r) => r[0]));
+    }
 
     res.json(review);
   } catch (error) {

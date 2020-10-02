@@ -1,6 +1,7 @@
 const passport = require("passport");
 
 const Login = (req, res, next) => {
+  //athenticate 두번째 파라미터로 {session:false}옵션을 넣으면 오류 나더라
   passport.authenticate("local", (authError, result, info) => {
     if (authError) {
       console.error(authError);
@@ -24,7 +25,7 @@ const Login = (req, res, next) => {
           maxAge: 1000 * 60 * 15,
           httpOnly: true,
           secure: false,
-          //req.signedCookies에서 봤을 땐 변화가 없지만 클라에서 보면 서명이 돼있다.
+          //req.signedCookies에서 봤을 땐 변화가 없어 보이지만 클라에서 보면 서명이 돼있다.
           signed: true,
         })
         .json(result.data);

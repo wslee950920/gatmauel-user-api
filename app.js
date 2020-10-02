@@ -38,7 +38,7 @@ app.use(
       maxAge: 1000 * 60 * 15,
       httpOnly: true,
       secure: false,
-      //signed:true옵션을 주든 말든 '세션 쿠키'에 서명한다.
+      //signed:true옵션을 주든 말든 '세션 쿠키'에는 secret으로 서명한다.
     },
   })
 );

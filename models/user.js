@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       email_verified: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
-        default: false,
+        defaultValue: false,
       },
       nick: {
         type: DataTypes.STRING(20),
@@ -36,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
       phone_verified: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
-        default: false,
+        defaultValue: false,
       },
       provider: {
         type: DataTypes.STRING(10),
