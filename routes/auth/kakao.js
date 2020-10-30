@@ -16,7 +16,7 @@ exports.kakaoCallback = (req, res, next) => {
         return next(authError);
       }
       if (!result) {
-        res.status(401).send("카카오 로그인 실패");
+        res.status(401).end();
       }
 
       //여기에 session:false옵션이 있어야 세션-쿠키 방식을 사용하지 않는다.

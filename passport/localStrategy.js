@@ -20,10 +20,10 @@ module.exports = (passport) => {
 
               done(null, { token, data });
             } else {
-              done(null, false, { message: "틀린 비밀번호입니다." });
+              done(null, false);
             }
           } else {
-            done(null, false, { message: "가입되지 않은 회원입니다." });
+            done(null, false);
           }
         } catch (error) {
           console.error(error);

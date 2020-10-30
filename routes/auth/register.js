@@ -20,11 +20,11 @@ const Register = async (req, res, next) => {
   try {
     const exUser = await User.findByEmail(email);
     if (exUser) {
-      return res.status(409).send("이미 가입된 이메일 입니다.");
+      return res.status(409).send("이미 사용 중이거나 탈퇴한 이메일입니다.");
     }
     const exNick = await User.findByNick(nick);
     if (exNick) {
-      return res.status(409).send("이미 사용 중인 닉네임 입니다.");
+      return res.status(409).send("이미 사용 중인 닉네임입니다.");
     }
 
     const user = User.build({
