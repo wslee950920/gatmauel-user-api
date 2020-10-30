@@ -44,6 +44,9 @@ db.Order.belongsTo(db.User, {
 db.User.hasMany(db.Review, { onDelete: "SET NULL" });
 db.Review.belongsTo(db.User, { onDelete: "SET NULL" });
 
+db.User.hasMany(db.Notice, { onDelete: "SET NULL" });
+db.Notice.belongsTo(db.User, { onDelete: "SET NULL" });
+
 db.Review.hasMany(db.Comment, { foreignKey: { allowNull: false } });
 db.Comment.belongsTo(db.Review, { foreignKey: { allowNull: false } });
 

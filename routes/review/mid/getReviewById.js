@@ -23,7 +23,7 @@ module.exports = async (req, res, next) => {
     if (!review) {
       return res.status(404).send("찾으시는 리뷰가 없습니다!");
     }
-    req.review = review;
+    res.locals.review = review;
 
     return next();
   } catch (e) {

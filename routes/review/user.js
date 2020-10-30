@@ -18,7 +18,7 @@ module.exports = async (req, res, next) => {
       where: { userId: res.locals.user.id },
     });
 
-    res.set("Last-Page", reviews.count).json(reviews.rows);
+    res.set("Last-Page", Math.ceil(reviews.count/10)).json(reviews.rows);
   } catch (error) {
     console.error(error);
 

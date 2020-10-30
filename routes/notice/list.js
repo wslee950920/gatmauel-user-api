@@ -1,4 +1,4 @@
-const { Comment } = require("../../models");
+const { Notice } = require("../../models");
 
 module.exports = async (req, res, next) => {
   const page = parseInt(req.query.page || "1", 10);
@@ -7,14 +7,13 @@ module.exports = async (req, res, next) => {
   }
 
   try {
-    const comments = await Comment.findAndCountAll({
+    const notices = await Notice.findAndCountAll({
       order: [["createdAt", "DESC"]],
       limit: 10,
       offset: (page - 1) * 10,
-      where: { userId: res.locals.user.id },
     });
 
-    res.set("Last-Page", Math.ceil(comments.count/10)).json(comments.rows);
+    res.set("Last-Page", Math.ceil(notices.count/10)).json(notices.rows);
   } catch (error) {
     console.error(error);
 

@@ -16,7 +16,7 @@ exports.CheckNick = async (req, res, next) => {
   try {
     const exNick = await User.findByNick(nick);
     if (exNick) {
-      return res.status(409).send("이미 사용 중 입니다.");
+      return res.status(409).send("이미 사용 중인 닉네임 입니다.");
     } else {
       return res.send("사용 가능합니다.");
     }

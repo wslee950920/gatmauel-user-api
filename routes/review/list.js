@@ -17,7 +17,7 @@ module.exports = async (req, res, next) => {
       },
     });
 
-    res.set("Last-Page", reviews.count).json(reviews.rows);
+    res.set("Last-Page", Math.ceil(reviews.count/10)).json(reviews.rows);
   } catch (error) {
     console.error(error);
 

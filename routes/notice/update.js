@@ -1,11 +1,14 @@
-const { Comment } = require("../../models");
+const { Notice } = require("../../models");
 
 module.exports = async (req, res, next) => {
   const { id } = req.params;
 
   try {
-    await Comment.update(
-      { content: req.body.content },
+    await Notice.update(
+      { 
+        content: req.body.content,
+        title: req.body.title 
+      },
       { where: { id } }
     );
 

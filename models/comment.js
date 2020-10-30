@@ -5,6 +5,7 @@ module.exports = (sequelize, DataTypes) =>
       nick: {
         type: DataTypes.STRING(20),
         allowNull: false,
+        defaultValue: "사장님",
       },
       content: {
         type: DataTypes.TEXT,
@@ -13,6 +14,5 @@ module.exports = (sequelize, DataTypes) =>
     },
     {
       timestamps: true,
-      paranoid: true,
     }
   );

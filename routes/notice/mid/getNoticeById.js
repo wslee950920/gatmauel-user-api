@@ -1,5 +1,5 @@
 const joi = require("joi");
-const { Comment } = require("../../../models");
+const { Notice } = require("../../../models");
 
 module.exports = async (req, res, next) => {
   const { id } = req.params;
@@ -13,12 +13,13 @@ module.exports = async (req, res, next) => {
   }
 
   try {
-    const comment = await Comment.findOne({
+    const notice = await Notice.findOne({
       where: { id },
     });
-    if (!comment) {
-      return res.status(404).send("찾으시는 댓글이 없습니다!");
+    if (!notice) {
+      return res.status(404).send("찾으시는 공지사항이 없습니다!");
     }
+    res.locals.notice=notice;
 
     return next();
   } catch (e) {

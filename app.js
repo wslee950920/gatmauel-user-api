@@ -4,6 +4,7 @@ const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 const session = require("express-session");
 const passport = require("passport");
+const cors=require('cors');
 require("dotenv").config();
 
 const { sequelize } = require("./models");
@@ -22,7 +23,12 @@ const authRouter = require("./routes/auth");
 const reviewRouter = require("./routes/review");
 const userRouter = require("./routes/user");
 const commentRouter = require("./routes/comment");
+const noticeRouter = require('./routes/notice');
 
+app.use(cors({
+  origin:true,
+  credentials:true
+}));
 app.use(morgan("dev"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
@@ -50,6 +56,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/review", reviewRouter);
 app.use("/api/user", userRouter);
 app.use("/api/comment", commentRouter);
+app.use('/api/notice', noticeRouter);
 app.use("/api", (req, res, next) => {
   res.send("api root directory");
 });
