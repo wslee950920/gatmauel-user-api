@@ -9,7 +9,7 @@ module.exports = async (req, res, next) => {
   });
   const result = schema.validate(req.params);
   if (result.error) {
-    return res.status(400).send(result.error);
+    return res.status(400).end();
   }
 
   try {
@@ -21,7 +21,7 @@ module.exports = async (req, res, next) => {
       },
     });
     if (!review) {
-      return res.status(404).send("찾으시는 리뷰가 없습니다!");
+      return res.status(404).end();
     }
     res.locals.review = review;
 

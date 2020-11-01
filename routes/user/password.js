@@ -11,7 +11,7 @@ module.exports = async (req, res, next) => {
 
   const result = schema.validate(req.body);
   if (result.error) {
-    return res.status(400).send(result.error);
+    return res.status(400).end();
   }
 
   const { oldPassword, newPassword } = req.body;
@@ -21,7 +21,7 @@ module.exports = async (req, res, next) => {
       const result = await exUser.checkPassword(oldPassword);
       if (result) {
       } else {
-        return res.status(401).send("틀린 비밀번호입니다.");
+        return res.status(401).end();
       }
 
       const hashed = await bcrypt.hash(newPassword, 12);
@@ -30,14 +30,12 @@ module.exports = async (req, res, next) => {
         { id: exUser.id }
       );
       if (num[0] == 0) {
-        return res.status(404).send("조건에 맞는 유저를 찾을 수 없습니다.");
-      } else if (num[0] > 1) {
-        throw new Error(`${num[0]}개의 열이 수정됨`);
+        return res.status(404).end();
       }
 
       return res.redirect("/api/auth/logout");
     } else {
-      return res.status(401).send("가입되지 않은 회원입니다.");
+      return res.status(401).end();
     }
   } catch (error) {
     console.error(error);

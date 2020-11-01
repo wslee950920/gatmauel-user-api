@@ -9,16 +9,16 @@ exports.CheckNick = async (req, res, next) => {
 
   const result = schema.validate(req.body);
   if (result.error) {
-    return res.status(400).send(result.error);
+    return res.status(400).end();
   }
 
   const { nick } = req.body;
   try {
     const exNick = await User.findByNick(nick);
     if (exNick) {
-      return res.status(409).send("이미 사용 중인 닉네임입니다.");
+      return res.status(409).end();
     } else {
-      return res.send("사용 가능합니다.");
+      return res.json(nick);
     }
   } catch (error) {
     console.error(error);
@@ -31,7 +31,7 @@ exports.Check = (req, res, next) => {
   const user = res.locals.user;
 
   if (!user) {
-    return res.status(403).send("로그인이 필요합니다.");
+    return res.status(403).end();
   } else {
     return res.json(user);
   }

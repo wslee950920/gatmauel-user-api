@@ -9,7 +9,7 @@ module.exports = async (req, res, next) => {
   });
   const result = schema.validate(req.params);
   if (result.error) {
-    return res.status(400).send(result.error);
+    return res.status(400).end();
   }
 
   try {
@@ -17,7 +17,7 @@ module.exports = async (req, res, next) => {
       where: { id },
     });
     if (!comment) {
-      return res.status(404).send("찾으시는 댓글이 없습니다!");
+      return res.status(404).end();
     }
 
     return next();

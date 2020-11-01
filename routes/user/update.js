@@ -11,7 +11,7 @@ module.exports = async (req, res, next) => {
 
   const result = schema.validate(req.body);
   if (result.error) {
-    return res.status(400).send(result.error);
+    return res.status(400).end();
   }
 
   try {
@@ -19,12 +19,10 @@ module.exports = async (req, res, next) => {
       where: { id: res.locals.user.id },
     });
     if (num[0] == 0) {
-      return res.status(404).send("조건에 맞는 유저를 찾을 수 없습니다.");
-    } else if (num[0] > 1) {
-      throw new Error(`${num[0]}개의 열이 수정됨`);
-    }
+      return res.status(404).end();
+    } 
 
-    res.end();
+    res.send(num[0]);
   } catch (e) {
     console.error(e);
 
