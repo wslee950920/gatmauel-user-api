@@ -18,11 +18,7 @@ const Register = async (req, res, next) => {
   try {
     const exUser = await User.findByEmail(email);
     if (exUser) {
-      return res.status(999).end();
-    }
-    const exNick = await User.findByNick(nick);
-    if (exNick) {
-      return res.status(888).end();
+      return res.status(409).end();
     }
 
     const user = User.build({
