@@ -22,8 +22,6 @@ const jwtMiddleware = require("./lib/jwtMiddleware");
 const authRouter = require("./routes/auth");
 const reviewRouter = require("./routes/review");
 const userRouter = require("./routes/user");
-const commentRouter = require("./routes/comment");
-const noticeRouter = require('./routes/notice');
 
 app.use(cors({
   origin:true,
@@ -40,23 +38,18 @@ app.use(
     saveUninitialized: false,
     secret: process.env.COOKIE_SECRET,
     cookie: {
-      //세션에 저장되어 있는 정보를 불러오기 위한 세션id 쿠키의 옵션
       maxAge: 1000 * 60 * 15,
       httpOnly: true,
       secure: false,
-      //signed:true옵션을 주든 말든 '세션 쿠키'에는 secret으로 서명한다.
     },
   })
 );
 app.use(passport.initialize());
-//app.use(passport.session());
 app.use(jwtMiddleware);
 
 app.use("/api/auth", authRouter);
 app.use("/api/review", reviewRouter);
 app.use("/api/user", userRouter);
-app.use("/api/comment", commentRouter);
-app.use('/api/notice', noticeRouter);
 app.use("/api", (req, res, next) => {
   res.send("api root directory");
 });

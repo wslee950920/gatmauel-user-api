@@ -17,7 +17,7 @@ module.exports = async (req, res, next) => {
       where: { id },
       include: {
         model: Comment,
-        attributes: ["id", "nick", "content", "createdAt", "userId"],
+        attributes: ["id", "nick", "content", "createdAt", "adminId"],
       },
     });
     if (!review) {
