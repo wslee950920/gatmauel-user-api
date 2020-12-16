@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         unique: true,
       },
-      email_verified: {
+      eVerified: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: false,
@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
         unique: true,
       },
-      phone_verified: {
+      pVerified: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: false,
@@ -74,7 +74,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       process.env.JWT_SECRET,
       {
-        expiresIn: "15m",
+        expiresIn: "30m",
       }
     );
 

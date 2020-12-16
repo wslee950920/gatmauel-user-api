@@ -21,12 +21,12 @@ db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
 db.User = require("./user")(sequelize, Sequelize);
+db.Admin = require("./admin")(sequelize, Sequelize);
 db.Food = require("./food")(sequelize, Sequelize);
 db.Order = require("./order")(sequelize, Sequelize);
 db.Review = require("./review")(sequelize, Sequelize);
 db.Comment = require("./comment")(sequelize, Sequelize);
 db.Detail = require("./detail")(sequelize, Sequelize);
-db.Notice = require("./notice")(sequelize, Sequelize);
 db.Hashtag = require("./hashtag")(sequelize, Sequelize);
 db.Category = require('./category')(sequelize, Sequelize);
 
@@ -44,14 +44,8 @@ db.Order.belongsTo(db.User, {
 db.User.hasMany(db.Review, { onDelete: "SET NULL" });
 db.Review.belongsTo(db.User, { onDelete: "SET NULL" });
 
-db.User.hasMany(db.Notice, { onDelete: "SET NULL" });
-db.Notice.belongsTo(db.User, { onDelete: "SET NULL" });
-
 db.Review.hasMany(db.Comment, { foreignKey: { allowNull: false } });
 db.Comment.belongsTo(db.Review, { foreignKey: { allowNull: false } });
-
-db.User.hasMany(db.Review, { onDelete: "SET NULL" });
-db.Comment.belongsTo(db.User, { onDelete: "SET NULL" });
 
 db.Hashtag.belongsToMany(db.Review, { through: "ReviewHashtag" });
 db.Review.belongsToMany(db.Hashtag, { through: "ReviewHashtag" });

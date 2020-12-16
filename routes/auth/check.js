@@ -1,6 +1,6 @@
 const joi = require("joi");
 
-const { User } = require("../../models");
+const { User, Admin } = require("../../models");
 
 exports.CheckNick = async (req, res, next) => {
   const schema = joi.object().keys({
@@ -15,7 +15,9 @@ exports.CheckNick = async (req, res, next) => {
   const { nick } = req.body;
   try {
     const exNick = await User.findByNick(nick);
-    if (exNick) {
+    const admin = await Admin.findByNick(nick);
+
+    if (exNick||admin) {
       return res.status(409).end();
     } else {
       return res.json(nick);

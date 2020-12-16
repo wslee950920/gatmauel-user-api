@@ -9,10 +9,6 @@ module.exports = async (req, res, next) => {
 
   const t = await sequelize.transaction();
   try {
-    await Comment.update(
-      { nick: "(알 수 없음)" },
-      { where: { userId: id }, transaction: t }
-    );
     await Review.update(
       { nick: "(알 수 없음)" },
       { where: { userId: id }, transaction: t }
