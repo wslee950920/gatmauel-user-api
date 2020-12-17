@@ -30,22 +30,6 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
-  Admin.prototype.setPassword = async function (password) {
-    const hash = await bcrypt.hash(password, 12);
-    this.hashedPassword = hash;
-  };
-  Admin.prototype.checkPassword = async function (password) {
-    const result = await bcrypt.compare(password, this.hashedPassword);
-    return result;
-  };
-  Admin.prototype.serialize = function () {
-    const data = { id: this.id, nick: this.nick };
-
-    return data;
-  };
-  Admin.findByEmail = function (email) {
-    return this.findOne({ where: { email } });
-  };
   Admin.findByNick = function (nick) {
     return this.findOne({ where: { nick } });
   };

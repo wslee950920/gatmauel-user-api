@@ -11,7 +11,7 @@ const { isLoggedIn, isNotLoggedIn } = require("../../lib/loginMiddleware");
 const router = express.Router();
 
 router.post("/register", isNotLoggedIn, Register);
-router.post("/check/nick", isNotLoggedIn, CheckNick);
+router.post("/check/nick", CheckNick);
 router.get("/check", isLoggedIn, Check);
 router.post("/login", isNotLoggedIn, Login);
 router.get("/logout", isLoggedIn, Logout);
