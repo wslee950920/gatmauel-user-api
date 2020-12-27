@@ -25,7 +25,8 @@ const userRouter = require("./routes/user");
 
 app.use(cors({
   origin:true,
-  credentials:true
+  credentials:true,
+  exposedHeaders:['Last-Page']
 }));
 app.use(morgan("dev"));
 app.use(express.static(path.join(__dirname, "public")));

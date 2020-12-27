@@ -10,7 +10,7 @@ module.exports = async (req, res, next) => {
 
     await t.commit();
 
-    res.status(205).json({rows:result});
+    res.json({deleted:id});
   } catch (e) {
     console.error(e);
 
