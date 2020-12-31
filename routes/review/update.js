@@ -14,7 +14,7 @@ module.exports = async (req, res, next) => {
 
   const {content}=req.body;
   try {
-    const rows=await Review.update(
+    await Review.update(
       { content },
       { where: { id } }
     );

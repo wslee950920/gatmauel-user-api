@@ -21,7 +21,7 @@ const Login = (req, res, next) => {
 
       return res
         .cookie("access_token", result.token, {
-          maxAge: 1000 * 60 * 30,
+          maxAge: result.maxAge,
           httpOnly: true,
           secure: false,
           signed: true,

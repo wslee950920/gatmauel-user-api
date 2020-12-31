@@ -6,7 +6,7 @@ module.exports = async (req, res, next) => {
   const t = await sequelize.transaction();
   try {
     await Comment.destroy({ where: { reviewId: id }, transaction: t });
-    const result=await Review.destroy({ where: { id }, transaction: t });
+    await Review.destroy({ where: { id }, transaction: t });
 
     await t.commit();
 

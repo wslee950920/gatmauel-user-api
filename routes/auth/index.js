@@ -17,5 +17,8 @@ router.post("/login", isNotLoggedIn, Login);
 router.get("/logout", isLoggedIn, Logout);
 router.get("/kakao", kakao);
 router.get("/kakao/callback", kakaoCallback);
+router.get('/kakao/failure', (req, res, next)=>{
+    res.status(503).end();
+});
 
 module.exports = router;
