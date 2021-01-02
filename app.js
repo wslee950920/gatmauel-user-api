@@ -24,7 +24,7 @@ const reviewRouter = require("./routes/review");
 const userRouter = require("./routes/user");
 
 app.use(cors({
-  origin:true,
+  origin:['http://localhost:3000', 'http://localhost:5000'],
   credentials:true,
   exposedHeaders:['Last-Page']
 }));

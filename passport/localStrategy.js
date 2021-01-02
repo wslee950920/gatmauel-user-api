@@ -20,7 +20,7 @@ module.exports = (passport) => {
         });
         const result = schema.validate(req.body);
         if (result.error) {
-          done(result.error);
+          return done(result.error);
         }
 
         try {
@@ -46,7 +46,6 @@ module.exports = (passport) => {
             done(null, false);
           }
         } catch (error) {
-          console.error(error);
           done(error);
         }
       }

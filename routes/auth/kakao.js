@@ -16,7 +16,8 @@ exports.kakaoCallback = (req, res, next) => {
         return next(authError);
       }
       if (!result) {
-        res.status(401).end();
+        const script="<script type='text/javascript'>alert('이미 가입된 이메일입니다.');window.location.href='http://localhost:3000/login';</script>"
+        return res.send(script);
       }
 
       //여기에 session:false옵션이 있어야 세션-쿠키 방식을 사용하지 않는다.

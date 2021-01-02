@@ -18,6 +18,13 @@ module.exports = (passport) => {
 
             done(null, { token, data });
           } else {
+            const exEmail=await User.findByEmail(
+              profile._json && profile._json.kakao_account.email
+            );
+            if(exEmail){
+              return done(null, false);
+            }
+            
             const newUser = await User.create({
               email: profile._json && profile._json.kakao_account.email,
               nick: profile._json && profile._json.properties.nickname,
@@ -30,7 +37,6 @@ module.exports = (passport) => {
             done(null, { token, data });
           }
         } catch (error) {
-          console.error(error);
           done(error);
         }
       }
