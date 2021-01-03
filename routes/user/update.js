@@ -18,11 +18,30 @@ module.exports = async (req, res, next) => {
     const num = await User.update(req.body, {
       where: { id: res.locals.user.id },
     });
-    if (num[0] == 0) {
+    if (num[0] === 0) {
+      return res.status(400).end();
+    }
+    
+    const exUser=await User.findByNick(req.body.nick);
+    if(!exUser){
       return res.status(404).end();
-    } 
+    }
 
-    res.send(num[0]);
+    const user = exUser.serialize();
+    const token=exUser.generateToken(false);
+    return res.cookie('access_token', token, {
+      maxAge: 1000 * 60 * 60 * 24,
+      httpOnly: true,
+      secure: false,
+      signed: true,
+    }).json({
+      user, 
+      info:{
+        email:exUser.email,
+        address:exUser.address,
+        phone:exUser.phone
+       }
+      });
   } catch (e) {
     console.error(e);
 

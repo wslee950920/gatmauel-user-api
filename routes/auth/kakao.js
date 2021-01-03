@@ -28,7 +28,7 @@ exports.kakaoCallback = (req, res, next) => {
           return next(loginError);
         }
 
-        const script="<script>window.opener.location.href='http://localhost:3000';window.close();</script>"
+        const script="<script type='text/javascript'>window.opener.location.href='http://localhost:3000/login';window.close();</script>"
         return res
           .cookie("access_token", result.token, {
             maxAge: 1000 * 60 * 60 * 24,
