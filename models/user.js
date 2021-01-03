@@ -66,7 +66,7 @@ module.exports = (sequelize, DataTypes) => {
     const data = { id: this.id, nick: this.nick };
     return data;
   };
-  User.prototype.generateToken = function () {
+  User.prototype.generateToken = function (checked) {
     const token = jwt.sign(
       {
         id: this.id,
@@ -74,7 +74,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       process.env.JWT_SECRET,
       {
-        expiresIn: "30m",
+        expiresIn: checked?"30d":"1d",
       }
     );
 

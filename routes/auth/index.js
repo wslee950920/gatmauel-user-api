@@ -18,7 +18,7 @@ router.get("/logout", isLoggedIn, Logout);
 router.get("/kakao", kakao);
 router.get("/kakao/callback", kakaoCallback);
 router.get('/kakao/failure', (req, res, next)=>{
-    res.status(503).end();
+    res.send('<div><br/><h2>카카오 로그인에서 오류가 발생했습니다. 잠시 후 다시 시도해주십시오</h2></div>');
 });
 
 module.exports = router;

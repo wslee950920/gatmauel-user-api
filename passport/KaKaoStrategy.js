@@ -13,7 +13,7 @@ module.exports = (passport) => {
         try {
           const exUser = await User.findBySns(profile.id, "kakao");
           if (exUser) {
-            const token = exUser.generateToken();
+            const token = exUser.generateToken(false);
             const data = exUser.serialize();
 
             done(null, { token, data });
@@ -31,7 +31,7 @@ module.exports = (passport) => {
               snsId: profile.id,
               provider: "kakao",
             });
-            const token = newUser.generateToken();
+            const token = newUser.generateToken(false);
             const data = newUser.serialize();
 
             done(null, { token, data });

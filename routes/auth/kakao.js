@@ -16,7 +16,7 @@ exports.kakaoCallback = (req, res, next) => {
         return next(authError);
       }
       if (!result) {
-        const script="<script type='text/javascript'>alert('이미 가입된 이메일입니다.');window.location.href='http://localhost:3000/login';</script>"
+        const script="<script type='text/javascript'>alert('이미 가입된 이메일입니다.');window.close();</script>"
         return res.send(script);
       }
 
@@ -28,16 +28,15 @@ exports.kakaoCallback = (req, res, next) => {
           return next(loginError);
         }
 
+        const script="<script>window.opener.location.href='http://localhost:3000';window.close();</script>"
         return res
           .cookie("access_token", result.token, {
-            //app.js에 세션id 쿠키 옵션과는 관련이 없다.
-            maxAge: 1000 * 60 * 60 * 24 * 30,
+            maxAge: 1000 * 60 * 60 * 24,
             httpOnly: true,
             secure: false,
-            //req.signedCookies에서 봤을 땐 변화가 없지만 클라에서 보면 서명이 돼있다.
             signed: true,
           })
-          .json(result.data);
+          .send(script);
       });
     }
   )(req, res, next);

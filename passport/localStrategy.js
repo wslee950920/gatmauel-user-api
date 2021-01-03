@@ -28,7 +28,7 @@ module.exports = (passport) => {
           if (exUser) {
             const result = await exUser.checkPassword(password);
             if (result) {
-              const token = exUser.generateToken();
+              const token = exUser.generateToken(req.body.checked);
               const data = exUser.serialize();
 
               done(null, { 
