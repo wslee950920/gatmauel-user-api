@@ -18,24 +18,29 @@ module.exports = async (req, res, next) => {
   try {
     const exUser = await User.findByPk(res.locals.user.id);
     if (exUser) {
-      const result = await exUser.checkPassword(oldPassword);
-      if (result) {
-      } else {
-        return res.status(401).end();
-      }
-
-      const hashed = await bcrypt.hash(newPassword, 12);
-      const num = await exUser.update(
-        { hashedPassword: hashed },
-        { id: exUser.id }
-      );
-      if (num[0] == 0) {
-        return res.status(404).end();
+      if(exUser.provider!=='local'){
+        return res.status(409).end();
+      } else{
+        const result = await exUser.checkPassword(oldPassword);
+        if (result) {
+          const hashed = await bcrypt.hash(newPassword, 12);
+          
+          const num = await exUser.update({ hashedPassword: hashed }, { 
+            where:{
+              id: res.locals.user.id
+            } 
+          });
+          if (num[0] === 0) {
+            return res.status(404).end();
+          }
+        } else {
+          return res.status(401).end();
+        }
       }
 
       return res.redirect("/api/auth/logout");
     } else {
-      return res.status(401).end();
+      return res.status(404).end();
     }
   } catch (error) {
     console.error(error);
