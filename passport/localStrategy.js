@@ -15,7 +15,7 @@ module.exports = (passport) => {
       async (req, email, password, done) => {
         const schema = joi.object().keys({
           checked: joi.boolean().required(),
-          email:joi.string().email().required(),
+          email:joi.string().email().max(40).required(),
           password:joi.string().required()
         });
         const result = schema.validate(req.body);

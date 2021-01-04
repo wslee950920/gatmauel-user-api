@@ -11,6 +11,6 @@ const router = express.Router();
 router.get("/info", isLoggedIn, info);
 router.patch("/update", isLoggedIn, update);
 router.patch("/password", isLoggedIn, password);
-router.delete("/remove", isLoggedIn, remove);
+router.put("/remove", isLoggedIn, remove);
 
 module.exports = router;

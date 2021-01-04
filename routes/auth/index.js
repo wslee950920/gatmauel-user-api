@@ -16,6 +16,7 @@ router.get("/check", isLoggedIn, Check);
 router.post("/login", isNotLoggedIn, Login);
 router.get("/logout", isLoggedIn, Logout);
 router.patch("/logout", isLoggedIn, Logout);
+router.put("/logout", isLoggedIn, Logout);
 router.get("/kakao", kakao);
 router.get("/kakao/callback", kakaoCallback);
 router.get('/kakao/failure', (req, res, next)=>{
