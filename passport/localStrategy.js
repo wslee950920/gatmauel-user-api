@@ -24,7 +24,7 @@ module.exports = (passport) => {
         }
 
         try {
-          const exUser = await User.findByEmail(email);
+          const exUser = await User.findByEmail(email, true);
           if (exUser) {
             const result = await exUser.checkPassword(password);
             if (result) {

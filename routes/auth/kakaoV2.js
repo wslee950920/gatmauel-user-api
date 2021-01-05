@@ -29,7 +29,7 @@ const kakaoV2= async (req, res, next)=>{
                 })
                 .json(data);
         } else {
-            const exEmail=await User.findByEmail(email);
+            const exEmail=await User.findByEmail(email, false);
             if(exEmail){
               return res.status(409).end();
             }

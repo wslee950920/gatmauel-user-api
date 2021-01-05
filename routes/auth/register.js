@@ -16,7 +16,7 @@ const Register = async (req, res, next) => {
 
   const { email, nick, password} = req.body;
   try {
-    const exUser = await User.findByEmail(email);
+    const exUser = await User.findByEmail(email, false);
     if (exUser) {
       return res.status(409).end();
     }

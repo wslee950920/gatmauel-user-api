@@ -22,7 +22,7 @@ module.exports = async (req, res, next) => {
       return res.status(400).end();
     }
     
-    const exUser=await User.findByNick(req.body.nick);
+    const exUser=await User.findByNick(req.body.nick, true);
     if(!exUser){
       return res.status(404).end();
     }

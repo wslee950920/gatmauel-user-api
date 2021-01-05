@@ -80,11 +80,11 @@ module.exports = (sequelize, DataTypes) => {
 
     return token;
   };
-  User.findByEmail = function (email) {
-    return this.findOne({ where: { email }, paranoid: false });
+  User.findByEmail = function (email, paranoid) {
+    return this.findOne({ where: { email }, paranoid });
   };
-  User.findByNick = function (nick) {
-    return this.findOne({ where: { nick }, paranoid: false });
+  User.findByNick = function (nick, paranoid) {
+    return this.findOne({ where: { nick }, paranoid });
   };
   User.findBySns = function (profileId, provider) {
     return this.findOne({ where: { snsId: profileId, provider } });

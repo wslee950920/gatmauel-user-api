@@ -14,8 +14,8 @@ exports.CheckNick = async (req, res, next) => {
 
   const { nick } = req.body;
   try {
-    const exNick = await User.findByNick(nick);
-    const exAdmin = await Admin.findByNick(nick);
+    const exNick = await User.findByNick(nick, false);
+    const exAdmin = await Admin.findByNick(nick, true);
 
     if (exNick||exAdmin) {
       return res.status(409).end();
