@@ -26,6 +26,13 @@ module.exports = (passport) => {
         try {
           const exUser = await User.findByEmail(email, true);
           if (exUser) {
+            if(exUser.provider!=='local'){
+              const err = new Error("SNS Login");
+              err.status = 403;
+
+              return done(err);
+            }
+
             const result = await exUser.checkPassword(password);
             if (result) {
               const token = exUser.generateToken(req.body.checked);
