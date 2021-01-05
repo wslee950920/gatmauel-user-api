@@ -4,7 +4,7 @@ const Register = require("./register");
 const { CheckNick, Check } = require("./check");
 const Login = require("./login");
 const Logout = require("./logout");
-const { kakao, kakaoCallback } = require("./kakao");
+const kakaoV2=require('./kakaoV2');
 
 const { isLoggedIn, isNotLoggedIn } = require("../../lib/loginMiddleware");
 
@@ -17,10 +17,6 @@ router.post("/login", isNotLoggedIn, Login);
 router.get("/logout", isLoggedIn, Logout);
 router.patch("/logout", isLoggedIn, Logout);
 router.put("/logout", isLoggedIn, Logout);
-router.get("/kakao", kakao);
-router.get("/kakao/callback", kakaoCallback);
-router.get('/kakao/failure', (req, res, next)=>{
-    res.send('<div><br/><h2>카카오 로그인에서 오류가 발생했습니다. 잠시 후 다시 시도해주십시오</h2></div>');
-});
+router.post('/kakao/v2', isNotLoggedIn, kakaoV2);
 
 module.exports = router;
