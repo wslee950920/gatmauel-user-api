@@ -1,4 +1,5 @@
 const joi = require("joi");
+const jwt=require('jsonwebtoken');
 
 const { User, sequelize, Review } = require("../../models");
 
@@ -45,9 +46,14 @@ module.exports = async (req, res, next) => {
     await t.commit();
 
     const user = exUser.serialize();
-    const token=exUser.generateToken(false);
+    const prev = req.signedCookies.access_token;
+    const decoded = jwt.verify(prev, process.env.JWT_SECRET);
+    const now = Math.floor(Date.now() / 1000);
+    const token=jwt.sign(user, process.env.JWT_SECRET,{
+      expiresIn:decoded.exp-now
+    })
     return res.cookie('access_token', token, {
-      maxAge: 1000 * 60 * 60 * 24,
+      maxAge: (decoded.exp-now)*1000,
       httpOnly: true,
       secure: false,
       signed: true,
@@ -61,6 +67,8 @@ module.exports = async (req, res, next) => {
       });
   } catch (e) {
     console.error(e);
+
+    await t.rollback();
 
     next(e);
   }

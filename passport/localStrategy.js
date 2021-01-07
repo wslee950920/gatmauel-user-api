@@ -27,8 +27,16 @@ module.exports = (passport) => {
           const exUser = await User.findByEmail(email, true);
           if (exUser) {
             if(exUser.provider!=='local'){
-              const err = new Error("SNS Login");
-              err.status = 403;
+              const err = new Error();
+              err.name="SnsLoginNeeded";
+              err.status = 406;
+
+              return done(err);
+            }
+            if(!exUser.eVerified){
+              const err=new Error();
+              err.name='EmailNotVerified';
+              err.status=403;
 
               return done(err);
             }

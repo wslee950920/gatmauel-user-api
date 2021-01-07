@@ -5,6 +5,7 @@ const { CheckNick, Check } = require("./check");
 const Login = require("./login");
 const Logout = require("./logout");
 const kakaoV2=require('./kakaoV2');
+const AuthCallback=require('./callback');
 
 const { isLoggedIn, isNotLoggedIn } = require("../../lib/loginMiddleware");
 
@@ -18,5 +19,6 @@ router.get("/logout", isLoggedIn, Logout);
 router.patch("/logout", isLoggedIn, Logout);
 router.put("/logout", isLoggedIn, Logout);
 router.post('/kakao/v2', isNotLoggedIn, kakaoV2);
+router.get('/callback', AuthCallback);
 
 module.exports = router;

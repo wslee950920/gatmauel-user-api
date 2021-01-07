@@ -39,6 +39,7 @@ const kakaoV2= async (req, res, next)=>{
               nick,
               snsId: id,
               provider: "kakao",
+              eVerified:true
             });
             const token = newUser.generateToken(false);
             const data = newUser.serialize();
