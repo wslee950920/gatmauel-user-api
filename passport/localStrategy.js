@@ -28,14 +28,12 @@ module.exports = (passport) => {
           if (exUser) {
             if(exUser.provider!=='local'){
               const err = new Error();
-              err.name="SnsLoginNeeded";
               err.status = 406;
 
               return done(err);
             }
             if(!exUser.eVerified){
               const err=new Error();
-              err.name='EmailNotVerified';
               err.status=403;
 
               return done(err);
