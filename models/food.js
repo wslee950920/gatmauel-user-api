@@ -2,7 +2,7 @@ module.exports = (sequelize, DataTypes) =>
   sequelize.define(
     "food",
     {
-      food: {
+      name: {
         type: DataTypes.STRING(20),
         allowNull: false,
         unique: true,
@@ -15,11 +15,11 @@ module.exports = (sequelize, DataTypes) =>
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-      comp: {
+      compo: {
         type: DataTypes.TEXT,
         allowNull: true,
       },
-      order: {
+      prior: {
         type: DataTypes.INTEGER,
       },
       deli: {

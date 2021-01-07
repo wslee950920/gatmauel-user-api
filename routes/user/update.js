@@ -1,6 +1,6 @@
 const joi = require("joi");
 
-const { User } = require("../../models");
+const { User, sequelize, Review } = require("../../models");
 
 module.exports = async (req, res, next) => {
   const schema = joi.object().keys({
@@ -15,17 +15,34 @@ module.exports = async (req, res, next) => {
   }
 
   try {
+    const t = await sequelize.transaction();
+
     const num = await User.update(req.body, {
       where: { id: res.locals.user.id },
+      transaction: t
     });
     if (num[0] === 0) {
       return res.status(400).end();
     }
     
-    const exUser=await User.findByNick(req.body.nick, true);
+    const exUser=await User.findOne({
+      where:{
+        nick:req.body.nick
+      }, 
+      transaction:t
+    });
     if(!exUser){
       return res.status(404).end();
     }
+
+    await Review.update({nick:exUser.nick}, {
+      where:{
+        userId:exUser.id
+      },
+      transaction:t
+    });
+
+    await t.commit();
 
     const user = exUser.serialize();
     const token=exUser.generateToken(false);

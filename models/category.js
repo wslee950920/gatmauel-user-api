@@ -6,6 +6,9 @@ module.exports = (sequelize, DataTypes) =>
         type: DataTypes.STRING(20),
         allowNull: false,
         unique: true,
+      },
+      prior: {
+        type: DataTypes.INTEGER,
       }
     },
     {
