@@ -28,7 +28,7 @@ module.exports = (passport) => {
           if (exUser) {
             if(exUser.provider!=='local'){
               const err = new Error();
-              err.status = 406;
+              err.status = 409;
 
               return done(err);
             }
