@@ -6,7 +6,8 @@ const { User, sequelize, Review } = require("../../models");
 module.exports = async (req, res, next) => {
   const schema = joi.object().keys({
     nick: joi.string().max(20),
-    address: joi.string().max(100),
+    address: joi.string().max(50).allow(''),
+    detail:joi.string().max(50).allow(''),
     phone: joi.string().max(11),
   });
 
@@ -62,6 +63,7 @@ module.exports = async (req, res, next) => {
       info:{
         email:exUser.email,
         address:exUser.address,
+        detail:exUser.detail,
         phone:exUser.phone
        }
       });

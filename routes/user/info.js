@@ -6,6 +6,7 @@ module.exports = async (req, res, next) => {
     const data = {
       email: user.email,
       address: user.address,
+      detail:user.detail,
       phone: user.phone,
     };
 
