@@ -46,8 +46,6 @@ const AuthCallback = (req, res, next) => {
                 </div>
             `);
     } catch (e) {
-      console.error(e);
-
       next(e);
     }
   });

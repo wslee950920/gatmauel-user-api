@@ -23,8 +23,6 @@ exports.CheckNick = async (req, res, next) => {
       return res.json(nick);
     }
   } catch (error) {
-    console.error(error);
-
     return next(error);
   }
 };

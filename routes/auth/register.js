@@ -65,8 +65,6 @@ const Register = async (req, res, next) => {
       },
       (err) => {
         if (err) {
-          console.error(err);
-
           return next(err);
         }
       }
@@ -74,8 +72,6 @@ const Register = async (req, res, next) => {
 
     return res.json(user.serialize());
   } catch (error) {
-    console.error(error);
-
     return next(error);
   }
 };

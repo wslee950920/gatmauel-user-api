@@ -4,8 +4,6 @@ const Login = (req, res, next) => {
   //athenticate 두번째 파라미터로 {session:false}옵션을 넣으면 오류 나더라
   passport.authenticate("local", (authError, result) => {
     if (authError) {
-      console.error(authError);
-
       return next(authError);
     }
     if (!result) {
@@ -14,8 +12,6 @@ const Login = (req, res, next) => {
 
     return req.login(result, { session: false }, (loginError) => {
       if (loginError) {
-        console.error(loginError);
-
         return next(loginError);
       }
 

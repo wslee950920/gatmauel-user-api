@@ -38,7 +38,6 @@ module.exports = async (req, res, next) => {
 
     res.json(review);
   } catch (error) {
-    console.error(error);
     next(error);
   }
 };

@@ -12,8 +12,6 @@ module.exports = async (req, res, next) => {
 
     res.json({deleted:id});
   } catch (e) {
-    console.error(e);
-
     await t.rollback();
 
     next(e);

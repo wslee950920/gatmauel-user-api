@@ -68,8 +68,6 @@ module.exports = async (req, res, next) => {
        }
       });
   } catch (e) {
-    console.error(e);
-
     await t.rollback();
 
     next(e);

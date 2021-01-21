@@ -41,8 +41,6 @@ module.exports = async (req, res, next) => {
 
     return res.redirect("/api/auth/logout");
   } catch (e) {
-    console.error(e);
-
     await t.rollback();
 
     next(e);
