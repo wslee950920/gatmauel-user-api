@@ -9,7 +9,7 @@ require("dotenv").config();
 
 const { sequelize } = require("./models");
 const passportConfig = require("./passport");
-const checkDelete = require("./lib/checkDelete");
+const checkDelete = require("./lib/checkDelete")
 
 const app = express();
 sequelize.sync();
@@ -28,7 +28,11 @@ app.use(cors({
   credentials:true,
   exposedHeaders:['Last-Page']
 }));
-app.use(morgan("dev"));
+if(process.env.NODE_ENV==='production'){
+  app.use(morgan('combined'));
+} else{
+  app.use(morgan('dev'));
+}
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
