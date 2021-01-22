@@ -8,7 +8,7 @@ module.exports = async (req, res, next) => {
     nick: joi.string().max(20),
     address: joi.string().max(50).allow(''),
     detail:joi.string().max(50).allow(''),
-    phone: joi.string().max(11),
+    phone: joi.string().max(11).allow(''),
   });
 
   const result = schema.validate(req.body);
@@ -16,37 +16,35 @@ module.exports = async (req, res, next) => {
     return res.status(400).end();
   }
 
+  const t = await sequelize.transaction();
   try {
-    const t = await sequelize.transaction();
+    const exUser = await User.findByPk(res.locals.user.id, {
+      transaction:t
+    });
+    const prevNick=exUser.nick;
 
     const num = await User.update(req.body, {
       where: { id: res.locals.user.id },
       transaction: t
     });
     if (num[0] === 0) {
+      await t.rollback();
+
       return res.status(400).end();
     }
-    
-    const exUser=await User.findOne({
-      where:{
-        nick:req.body.nick
-      }, 
-      transaction:t
-    });
-    if(!exUser){
-      return res.status(404).end();
-    }
 
-    await Review.update({nick:exUser.nick}, {
-      where:{
-        userId:exUser.id
-      },
-      transaction:t
-    });
+    if(prevNick!==req.body.nick){
+      await Review.update({nick:req.body.nick}, {
+        where:{
+          userId:res.locals.user.id
+        },
+        transaction:t
+      });
+    }
 
     await t.commit();
 
-    const user = exUser.serialize();
+    const user = {id:res.locals.user.id, nick:req.body.nick};
     const prev = req.signedCookies.access_token;
     const decoded = jwt.verify(prev, process.env.JWT_SECRET);
     const now = Math.floor(Date.now() / 1000);
@@ -62,9 +60,9 @@ module.exports = async (req, res, next) => {
       user, 
       info:{
         email:exUser.email,
-        address:exUser.address,
-        detail:exUser.detail,
-        phone:exUser.phone
+        address:req.body.address,
+        detail:req.body.detail,
+        phone:req.body.phone
        }
       });
   } catch (e) {

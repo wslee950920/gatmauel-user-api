@@ -55,9 +55,6 @@ app.use(jwtMiddleware);
 app.use("/api/auth", authRouter);
 app.use("/api/review", reviewRouter);
 app.use("/api/user", userRouter);
-app.use("/api", (req, res, next) => {
-  res.send("api root directory");
-});
 
 app.use((req, res, next) => {
   const err = new Error("Not Found");

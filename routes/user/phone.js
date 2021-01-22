@@ -24,7 +24,7 @@ const makeSignature=()=>{
 
     return hmac.digest('base64');
 }
-const makeMms=(phone)=>{
+const makeMms=(phone, code)=>{
     return {
         "type":"SMS",
         "contentType":"COMM",
@@ -34,7 +34,7 @@ const makeMms=(phone)=>{
         "messages":[
             {
                 "to":phone,
-                "content":`갯마을 전화번호 인증코드 ${Math.random().toString().substring(2, 8)}`
+                "content":`갯마을 전화번호 인증코드 ${code}`
             }
         ]
     }
@@ -43,16 +43,17 @@ const makeMms=(phone)=>{
 module.exports = async (req, res, next)=>{
     const schema = joi.object().keys({
         phone: joi.string().max(11),
-      });
+    });
     const result = schema.validate(req.body);
     if (result.error) {
         return res.status(400).end();
     }
 
     const {phone}=req.body;
+    const code=Math.random().toString().substring(2, 8);
     try{
         await axios.post(`https://sens.apigw.ntruss.com/sms/v2/services/${process.env.NAVER_SERVICE_ID}/messages`, 
-            makeMms(phone),
+            makeMms(phone, code),
             {
                 headers:{
                     'Content-Type': 'application/json; charset=utf-8',
@@ -69,6 +70,8 @@ module.exports = async (req, res, next)=>{
                 return res.status(400).end();
             }
 
+            req.session.cookie.maxAge=1000*60*3;
+            req.session.code=code;
             const exUser = await User.findByPk(res.locals.user.id);
             return res.json({updatedAt:exUser.updatedAt});
         })
