@@ -5,13 +5,14 @@ const {User} = require('../../models');
 module.exports=async(req, res, next)=>{
     const schema = joi.object().keys({
         code: joi.string().max(6),
+        phone:joi.string().max(11)
     });
     const result = schema.validate(req.body);
     if (result.error) {
         return res.status(400).end();
     }
 
-    const {code}=req.body;
+    const {code, phone}=req.body;
     try{
         if(!req.session.code){
             const num=await User.update({
@@ -29,7 +30,8 @@ module.exports=async(req, res, next)=>{
         
         if(code===req.session.code){
             const num=await User.update({
-                pVerified:true
+                pVerified:true,
+                phone
             }, {
                 where: { id: res.locals.user.id }
             });

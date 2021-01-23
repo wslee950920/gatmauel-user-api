@@ -23,7 +23,10 @@ module.exports = async (req, res, next) => {
     });
     const prevNick=exUser.nick;
 
-    const num = await User.update(req.body, {
+    const num = await User.update({
+      ...req.body,
+      pVerified:req.body.phone!==''?true:false
+    }, {
       where: { id: res.locals.user.id },
       transaction: t
     });

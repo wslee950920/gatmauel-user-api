@@ -63,7 +63,10 @@ module.exports = async (req, res, next)=>{
                 },
             }
         ).then(async ()=>{
-            const num=await User.update({phone}, {
+            const num=await User.update({
+                pVerified:false,
+                phone:''
+            }, {
                 where: { id: res.locals.user.id }
             });
             if (num[0] === 0) {
