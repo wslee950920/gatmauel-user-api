@@ -70,7 +70,7 @@ const Register = async (req, res, next) => {
       }
     );
 
-    return res.json(user.serialize());
+    return res.end();
   } catch (error) {
     return next(error);
   }
