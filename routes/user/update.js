@@ -8,7 +8,7 @@ module.exports = async (req, res, next) => {
     nick: joi.string().max(20),
     address: joi.string().max(50).allow(''),
     detail:joi.string().max(50).allow(''),
-    phone: joi.string().max(11).allow(''),
+    phone: joi.string().max(11).allow(null),
   });
 
   const result = schema.validate(req.body);
@@ -25,7 +25,7 @@ module.exports = async (req, res, next) => {
 
     const num = await User.update({
       ...req.body,
-      pVerified:req.body.phone!==''?true:false
+      pVerified:req.body.phone?true:false
     }, {
       where: { id: res.locals.user.id },
       transaction: t
@@ -46,6 +46,9 @@ module.exports = async (req, res, next) => {
     }
 
     await t.commit();
+
+    delete req.session.phone;
+    delete req.session.code;
 
     const user = {id:res.locals.user.id, nick:req.body.nick};
     const prev = req.signedCookies.access_token;

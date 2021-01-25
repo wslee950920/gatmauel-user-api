@@ -4,8 +4,8 @@ const {User} = require('../../models');
 
 module.exports=async(req, res, next)=>{
     const schema = joi.object().keys({
-        code: joi.string().max(6),
-        phone:joi.string().max(11)
+        code: joi.string().max(6).required(),
+        phone:joi.string().max(11).required()
     });
     const result = schema.validate(req.body);
     if (result.error) {
@@ -17,7 +17,7 @@ module.exports=async(req, res, next)=>{
         if(!req.session.code){
             const num=await User.update({
                 pVerified:false,
-                phone:''
+                phone:null
             }, {
                 where: { id: res.locals.user.id }
             });
@@ -29,6 +29,10 @@ module.exports=async(req, res, next)=>{
         }
         
         if(code===req.session.code){
+            if(phone!==req.session.phone){
+                return res.status(403).end();
+            }
+            
             const num=await User.update({
                 pVerified:true,
                 phone
@@ -40,12 +44,13 @@ module.exports=async(req, res, next)=>{
             }
 
             delete req.session.code;
+            delete req.session.phone;
 
             return res.end();
         } else{
             const num=await User.update({
                 pVerified:false,
-                phone:''
+                phone:null
             }, {
                 where: { id: res.locals.user.id }
             });
