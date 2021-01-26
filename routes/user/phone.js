@@ -52,38 +52,46 @@ module.exports = async (req, res, next)=>{
     const {phone}=req.body;
     const code=Math.random().toString().substring(2, 8);
     try{
-        const exPhone=await User.findOne({where:{phone}});
-        if(exPhone){
-            return res.status(409).end();
+        if(res.locals.user){
+            const exPhone=await User.findOne({where:{phone}});
+            if(exPhone){
+                return res.status(409).end();
+            }
         }
 
         await axios.post(`https://sens.apigw.ntruss.com/sms/v2/services/${process.env.NAVER_SERVICE_ID}/messages`, 
-            makeMms(phone, code),
+            await makeMms(phone, code),
             {
                 headers:{
                     'Content-Type': 'application/json; charset=utf-8',
-                    'x-ncp-apigw-timestamp': Date.now().toString(),
+                    'x-ncp-apigw-timestamp': await Date.now().toString(),
                     'x-ncp-iam-access-key': process.env.NAVER_ACCESS_KEY,
-                    'x-ncp-apigw-signature-v2': makeSignature().toString()
+                    'x-ncp-apigw-signature-v2': await makeSignature().toString()
                 },
             }
         ).then(async ()=>{
-            const num=await User.update({
-                pVerified:false,
-                phone:null
-            }, {
-                where: { id: res.locals.user.id }
-            });
-            if (num[0] === 0) {
-                return res.status(400).end();
+            if(res.locals.user){
+                const num=await User.update({
+                    pVerified:false,
+                    phone:null
+                }, {
+                    where: { id: res.locals.user.id }
+                });
+                if (num[0] === 0) {
+                    return res.status(400).end();
+                }
             }
 
             req.session.cookie.maxAge=1000*60*3;
             req.session.code=code;
             req.session.phone=phone;
 
-            const exUser = await User.findByPk(res.locals.user.id);
-            return res.json({updatedAt:exUser.updatedAt});
+            if(res.locals.user){
+                const exUser = await User.findByPk(res.locals.user.id);
+                return res.json({updatedAt:exUser.updatedAt});
+            } else{
+                return res.json({updatedAt:Date.now()});
+            }
         })
         .catch((e)=>{
             next(e);

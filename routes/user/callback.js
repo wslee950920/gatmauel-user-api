@@ -4,7 +4,7 @@ const {User} = require('../../models');
 
 module.exports=async(req, res, next)=>{
     const schema = joi.object().keys({
-        code: joi.string().max(6).required(),
+        code: joi.string().required(),
         phone:joi.string().max(11).required()
     });
     const result = schema.validate(req.body);
