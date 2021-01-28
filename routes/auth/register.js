@@ -2,6 +2,7 @@ const joi = require("joi");
 const aws = require("aws-sdk");
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
+const schedule = require("node-schedule");
 
 aws.config.update({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -69,6 +70,18 @@ const Register = async (req, res, next) => {
         }
       }
     );
+
+    const end = new Date();
+    end.setDate(end.getDate() + 3);
+    schedule.scheduleJob(end, () => {
+      User.destroy({ 
+        where: { 
+          id,
+          eVerified:false 
+        }, 
+        force: true 
+      });
+    });
 
     return res.end();
   } catch (error) {

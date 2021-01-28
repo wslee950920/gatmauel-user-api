@@ -16,6 +16,7 @@ app.set("port", process.env.PORT || 9090);
 
 sequelize.sync();
 passportConfig(passport);
+checkDelete();
 
 const jwtMiddleware = require("./lib/jwtMiddleware");
 const authRouter = require("./routes/auth");
@@ -23,7 +24,6 @@ const reviewRouter = require("./routes/review");
 const userRouter = require("./routes/user");
 const orderRouter = require('./routes/order');
 
-app.use(checkDelete);
 app.use(cors({
   origin:true,
   credentials:true,
