@@ -14,17 +14,18 @@ const checkDelete = require("./lib/checkDelete")
 const app = express();
 sequelize.sync();
 passportConfig(passport);
-checkDelete();
 
+app.use(checkDelete);
 app.set("port", process.env.PORT || 9090);
 
 const jwtMiddleware = require("./lib/jwtMiddleware");
 const authRouter = require("./routes/auth");
 const reviewRouter = require("./routes/review");
 const userRouter = require("./routes/user");
+const orderRouter = require('./routes/order');
 
 app.use(cors({
-  origin:['http://localhost:3000', 'http://localhost:5000'],
+  origin:true,
   credentials:true,
   exposedHeaders:['Last-Page']
 }));
@@ -55,6 +56,7 @@ app.use(jwtMiddleware);
 app.use("/api/auth", authRouter);
 app.use("/api/review", reviewRouter);
 app.use("/api/user", userRouter);
+app.use('/api/order', orderRouter);
 
 app.use((req, res, next) => {
   const err = new Error("Not Found");
