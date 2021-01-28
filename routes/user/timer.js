@@ -7,7 +7,7 @@ module.exports=(req, res, next)=>{
     res.set(headers);
 
     const timer=setInterval(()=>{
-        res.write(`id: ${Math.random().toString().substring(2, 8)}\ndata: ${new Date().valueOf().toString()}\n\n`);
+        return res.write(`id: ${Math.random().toString().substring(2, 8)}\ndata: ${new Date().valueOf().toString()}\n\n`);
     }, 1000);
 
     res.on('close', ()=>{

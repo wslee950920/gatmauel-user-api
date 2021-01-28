@@ -19,7 +19,7 @@ module.exports = async (req, res, next) => {
       { where: { id } }
     );
 
-    res.json({updated:id, content});
+    return res.json({updated:id, content});
   } catch (e) {
     next(e);
   }

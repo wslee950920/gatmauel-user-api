@@ -12,11 +12,10 @@ const passportConfig = require("./passport");
 const checkDelete = require("./lib/checkDelete")
 
 const app = express();
+app.set("port", process.env.PORT || 9090);
+
 sequelize.sync();
 passportConfig(passport);
-
-app.use(checkDelete);
-app.set("port", process.env.PORT || 9090);
 
 const jwtMiddleware = require("./lib/jwtMiddleware");
 const authRouter = require("./routes/auth");
@@ -24,6 +23,7 @@ const reviewRouter = require("./routes/review");
 const userRouter = require("./routes/user");
 const orderRouter = require('./routes/order');
 
+app.use(checkDelete);
 app.use(cors({
   origin:true,
   credentials:true,

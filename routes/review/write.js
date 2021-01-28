@@ -36,7 +36,7 @@ module.exports = async (req, res, next) => {
       await review.addHashtags(result.map((r) => r[0]));
     }
 
-    res.json(review);
+    return res.json(review);
   } catch (error) {
     next(error);
   }
