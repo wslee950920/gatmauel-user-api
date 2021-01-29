@@ -45,8 +45,6 @@ module.exports = async (req, res, next) => {
       });
     }
 
-    await t.commit();
-
     delete req.session.phone;
     delete req.session.code;
 
@@ -57,6 +55,9 @@ module.exports = async (req, res, next) => {
     const token=jwt.sign(user, process.env.JWT_SECRET,{
       expiresIn:decoded.exp-now
     })
+
+    await t.commit();
+    
     return res.cookie('access_token', token, {
       maxAge: (decoded.exp-now)*1000,
       httpOnly: true,

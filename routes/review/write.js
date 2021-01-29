@@ -24,6 +24,7 @@ module.exports = async (req, res, next) => {
       imgs: keys.join("||"),
       userId: res.locals.user.id,
     });
+    
     const hashtags = content.match(/#[^\s]*/g);
     if (hashtags) {
       const result = await Promise.all(
