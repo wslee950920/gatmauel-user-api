@@ -20,7 +20,10 @@ module.exports = (passport) => {
         });
         const result = schema.validate(req.body);
         if (result.error) {
-          return done(result.error);
+          const err = new Error();
+          err.status = 400;
+
+          return done(err);
         }
 
         try {
