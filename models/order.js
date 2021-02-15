@@ -2,6 +2,10 @@ module.exports = (sequelize, DataTypes) =>
   sequelize.define(
     "order",
     {
+      orderId:{
+        type:DataTypes.STRING(10),
+        allowNull:false
+      },
       customer: {
         type: DataTypes.STRING(20),
         allowNull: false,
