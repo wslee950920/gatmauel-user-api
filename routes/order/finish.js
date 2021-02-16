@@ -31,7 +31,10 @@ module.exports=async(req, res, next)=>{
         await t.commit();
         req.session.destroy();
 
-        const script=`<script type="text/javascript">window.opener.postMessage(${JSON.stringify(newOrder.dataValues)}, 'http://localhost:3000');window.close();</script>`
+        const obj={
+            success:newOrder
+        }
+        const script=`<script type="text/javascript">window.opener.postMessage(${JSON.stringify(obj)}, 'http://localhost:3000');window.close();</script>`
         return res.send(script);
     } catch(err){
         await t.rollback();
