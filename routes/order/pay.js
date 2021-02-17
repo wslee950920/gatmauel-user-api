@@ -1,8 +1,7 @@
 const joi = require("joi");
-const axios=require('axios');
 const crypto=require('crypto');
 
-const { User } = require("../../models");
+const { User, Order, Detail, sequelize } = require("../../models");
 
 module.exports=async(req, res, next)=>{
     const schema = joi.object().keys({
@@ -22,9 +21,10 @@ module.exports=async(req, res, next)=>{
     if (result.error) {
         return res.status(400).end();
     }
+    const {phone, total, request, order, deli, address, detail}=req.body;
 
     if(req.session.phone){
-        if(req.session.phone!==req.body.phone){
+        if(req.session.phone!==phone){
             return res.status(406).end();
         }
     } else{
@@ -38,41 +38,48 @@ module.exports=async(req, res, next)=>{
         }
     }
 
+    const t = await sequelize.transaction();
     try{
-        if(req.query.measure.toString()==='kakao'){
-            const {order, total}=req.body;
-            const orderId=await crypto.randomBytes(5).toString('hex');
-    
-            const result=await axios({
-                url:"https://kapi.kakao.com/v1/payment/ready",
-                method:'post',
-                params:{
-                    cid:'TC0ONETIME',
-                    partner_order_id:orderId,
-                    partner_user_id:'gatmauel9300',
-                    item_name:`${order[0].name}`+(order.length>1?` 외 ${order.length-1}`:''),
-                    quantity:order.length,
-                    total_amount:total,
-                    tax_free_amount:0,
-                    approval_url:'http://localhost:9090/api/order/approval',
-                    cancel_url:'http://localhost:9090/api/order/cancel',
-                    fail_url:'http://localhost:9090/api/order/fail'
-                },
-                headers:{
-                    'Authorization': `KakaoAK ${process.env.KAKAO_APP_ADMIN_KEY}`,
-                    'Content-type': 'application/x-www-form-urlencoded;charset=utf-8'
-                }
-            })
+        const orderId=await crypto.randomBytes(5).toString('hex').toUpperCase();
+        const newOrder=await Order.create({
+            orderId,
+            customer:res.locals.user?res.locals.user.nick:('gatmauel'+phone.slice(-4)),
+            phone,
+            total,
+            deli,
+            request,
+            customerId:res.locals.user?res.locals.user.id:null,
+            address,
+            detail,
+        },{
+            transaction:t
+        });
+        await Promise.all(order.map((value)=>Detail.create({
+            num:value.num,
+            foodId:value.id,
+            orderId:newOrder.id
+        },{
+            transaction:t
+        })));
+        await t.commit();
 
-            req.session.payload={
+        if(req.params.measure==='kakao'){
+            res.locals.payload={
                 ...req.body,
                 orderId,
-                tid:result.data.tid
             };
+
+            return next();
+        } else if(req.params.measure==='later'){
+            res.locals.order=newOrder;
             
-            return res.json({result:result.data});
+            return next();
         }
+
+        return next(req.params.measure.toString());
     } catch(e){
+        await t.rollback();
+
         next(e);
     }
 }

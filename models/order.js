@@ -4,7 +4,16 @@ module.exports = (sequelize, DataTypes) =>
     {
       orderId:{
         type:DataTypes.STRING(10),
-        allowNull:false
+        allowNull:false,
+        unique: true
+      },
+      tId:{
+        type:DataTypes.STRING(20),
+        unique:true
+      },
+      aId:{
+        type:DataTypes.STRING(20),
+        unique:true
       },
       customer: {
         type: DataTypes.STRING(20),

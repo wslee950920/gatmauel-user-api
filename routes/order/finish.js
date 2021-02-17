@@ -1,44 +1,29 @@
-const { Order, Detail, sequelize } = require("../../models");
+const { Order } = require("../../models");
 
 module.exports=async(req, res, next)=>{
-    const {phone, total, request, order, deli, address, detail, orderId}=req.session.payload;
-    
-    const t = await sequelize.transaction();
-    try{
-        const newOrder=await Order.create({
-            orderId,
-            customer:res.locals.user?
-                res.locals.user.nick:
-                ('비회원'+phone.slice(-4)),
-            phone,
-            total,
-            deli,
-            request,
-            customerId:res.locals.user?res.locals.user.id:null,
-            address,
-            detail
-        },{
-            transaction:t
-        });
-        await Promise.all(order.map((value)=>Detail.create({
-            num:value.num,
-            foodId:value.id,
-            orderId:newOrder.id
-        },{
-            transaction:t
-        })));
+    try{       
+        if(req.params.measure==='later'){
+            await Order.update({
+                paid:true
+            },{
+                where:{
+                    id:res.locals.order.id
+                },
+            })
 
-        await t.commit();
-        req.session.destroy();
+            req.session.destroy();
 
-        const obj={
-            success:newOrder
-        }
-        const script=`<script type="text/javascript">window.opener.postMessage(${JSON.stringify(obj)}, 'http://localhost:3000');window.close();</script>`
-        return res.send(script);
-    } catch(err){
-        await t.rollback();
+            return res.json(res.locals.order);
+        } else if(req.query.measure.toString()==='kakao'){
+            req.session.destroy();
         
+            const obj={
+                success:res.locals.order
+            }
+            const script=`<script type="text/javascript">window.opener.postMessage(${JSON.stringify(obj)}, 'http://localhost:3000');window.close();</script>`;
+            return res.send(script);
+        }
+    } catch(err){        
         next(err);
     }
 }

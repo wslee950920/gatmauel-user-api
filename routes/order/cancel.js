@@ -1,22 +1,34 @@
 const axios=require('axios');
 
-module.exports=(req, res, next)=>{
-    const {tid}=req.session.payload;
+const { Order } = require("../../models");
 
-    axios({
-        method:'post',
-        url:"https://kapi.kakao.com/v1/payment/order",
-        headers:{
-            'Authorization': `KakaoAK ${process.env.KAKAO_APP_ADMIN_KEY}`,
-            'Content-type': 'application/x-www-form-urlencoded;charset=utf-8'
-        },
-        params:{
-            cid:'TC0ONETIME',
-            tid
-        }
-    }).then((result)=>{
+module.exports=async(req, res, next)=>{
+    try{
+        const order=await Order.findAll({
+            where:{
+                orderId:req.query.orderId.toString()
+            }
+        });
+
+        const result=await axios({
+            method:'post',
+            url:"https://kapi.kakao.com/v1/payment/order",
+            headers:{
+                'Authorization': `KakaoAK ${process.env.KAKAO_APP_ADMIN_KEY}`,
+                'Content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+            },
+            params:{
+                cid:'TC0ONETIME',
+                tid:order[0].tId
+            }
+        });
+        
         if(result.data.status==='QUIT_PAYMENT'){
-            req.session.destroy();
+            await Order.destroy({
+                where:{
+                    id:order[0].id
+                },
+            })
             
             const obj={
                 cancel:'결제가 취소되었습니다.'
@@ -24,7 +36,7 @@ module.exports=(req, res, next)=>{
             const script=`<script type="text/javascript">window.opener.postMessage(${JSON.stringify(obj)}, 'http://localhost:3000');window.close();</script>`
             return res.send(script);
         }
-    }).catch((err)=>{
+    } catch(err){
         next(err);
-    })
+    }
 }
