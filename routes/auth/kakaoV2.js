@@ -22,14 +22,15 @@ const kakaoV2= async (req, res, next)=>{
         snsId:joi.number().required(),
         email:joi.string().email().required(),
         nick:joi.string().required(),
-        eVerified:joi.boolean().required()
+        eVerified:joi.boolean().required(),
+        phone:joi.string().max(11).required()
     });
     const result = schema.validate(req.body);
     if (result.error) {
         return res.status(400).end();
     }
 
-    const { email, nick, snsId, eVerified } = req.body;
+    const { email, nick, snsId, eVerified, phone } = req.body;
     try{
         const exUser = await User.findBySns(snsId, "kakao");
         if (exUser) {
@@ -58,7 +59,8 @@ const kakaoV2= async (req, res, next)=>{
               nick,
               snsId,
               provider: "kakao",
-              eVerified
+              eVerified,
+              phone
             });
             if(!newUser.eVerified){
                 const urlToken = jwt.sign(

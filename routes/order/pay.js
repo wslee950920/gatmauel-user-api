@@ -1,5 +1,6 @@
 const joi = require("joi");
 const crypto=require('crypto');
+const schedule = require("node-schedule");
 
 const { User, Order, Detail, sequelize } = require("../../models");
 
@@ -62,6 +63,17 @@ module.exports=async(req, res, next)=>{
             transaction:t
         })));
         await t.commit();
+
+        const end = new Date();
+        end.setDate(end.getDate() + 3);
+        schedule.scheduleJob(end, () => {
+            Order.destroy({ 
+                where: { 
+                    id:newOrder.id,
+                    paid:false 
+                },  
+            });
+        });
 
         if(req.params.measure==='kakao'){
             res.locals.payload={
