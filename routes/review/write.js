@@ -1,6 +1,6 @@
 const joi = require("joi");
 
-const { Review, Hashtag } = require("../../models");
+const { Review, Hashtag, sequelize } = require("../../models");
 
 module.exports = async (req, res, next) => {
   const schema = joi.object().keys({
@@ -13,6 +13,7 @@ module.exports = async (req, res, next) => {
 
   const { content } = req.body;
   const imgs = req.files;
+  const t = await sequelize.transaction();
   try {
     const keys = await imgs.map((img) => {
       return img.key.replace("original", "/resized", 1).replace(/(\s*)/g, "");
@@ -23,6 +24,8 @@ module.exports = async (req, res, next) => {
       content,
       imgs: keys.join("||"),
       userId: res.locals.user.id,
+    },{
+      transaction:t
     });
     
     const hashtags = content.match(/#[^\s]*/g);
@@ -31,14 +34,21 @@ module.exports = async (req, res, next) => {
         hashtags.map((tag) =>
           Hashtag.findOrCreate({
             where: { title: tag.slice(1).toLowerCase() },
+            transaction:t
           })
         )
       );
-      await review.addHashtags(result.map((r) => r[0]));
+      await review.addHashtags(result.map((r) => r[0]),{
+        transaction:t
+      });
     }
+
+    await t.commit();
 
     return res.json(review);
   } catch (error) {
+    await t.rollback();
+
     next(error);
   }
 };

@@ -62,7 +62,6 @@ module.exports=async(req, res, next)=>{
         },{
             transaction:t
         })));
-        await t.commit();
 
         const end = new Date();
         end.setDate(end.getDate() + 3);
@@ -87,6 +86,8 @@ module.exports=async(req, res, next)=>{
             
             return next();
         }
+
+        await t.commit();
 
         return next(req.params.measure.toString());
     } catch(e){
