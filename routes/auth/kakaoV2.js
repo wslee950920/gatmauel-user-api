@@ -60,7 +60,8 @@ const kakaoV2= async (req, res, next)=>{
               snsId,
               provider: "kakao",
               eVerified,
-              phone
+              phone,
+              pVerified:true
             });
             if(!newUser.eVerified){
                 const urlToken = jwt.sign(

@@ -1,9 +1,9 @@
 const axios=require('axios');
 
-const { Order } = require("../../models");
+const { Order, Detail, sequelize } = require("../../models");
 
 module.exports=async(req, res, next)=>{
-    const {orderId, order, total, phone}=res.locals.payload;
+    const {orderId, order, total, phone, newId}=res.locals.payload;
     try{
         const result=await axios({
             url:"https://kapi.kakao.com/v1/payment/ready",
@@ -38,6 +38,18 @@ module.exports=async(req, res, next)=>{
             
         return res.json({result:result.data});
     } catch(e){
+        const t = await sequelize.transaction();
+        try{
+            await Order.destroy({ where: { id:newId }, transaction: t });
+            await Detail.destroy({where:{orderId:newId}, transaction:t});
+
+            await t.commit();
+        } catch(err){
+            await t.rollback();
+
+            next(err);
+        }
+
         next(e);
     }
 }

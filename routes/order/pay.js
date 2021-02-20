@@ -74,10 +74,13 @@ module.exports=async(req, res, next)=>{
             });
         });
 
+        await t.commit();
+
         if(req.params.measure==='kakao'){
             res.locals.payload={
                 ...req.body,
                 orderId,
+                newId:newOrder.id
             };
 
             return next();
@@ -86,8 +89,6 @@ module.exports=async(req, res, next)=>{
             
             return next();
         }
-
-        await t.commit();
 
         return next(req.params.measure.toString());
     } catch(e){
