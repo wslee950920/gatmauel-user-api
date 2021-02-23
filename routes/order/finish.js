@@ -1,4 +1,4 @@
-const { Order, Detail, sequelize } = require("../../models");
+const { Order } = require("../../models");
 
 
 module.exports=async(req, res, next)=>{
@@ -15,24 +15,6 @@ module.exports=async(req, res, next)=>{
 
         return res.json({orderId:res.locals.payload.orderId});
     } catch(e){        
-        const t = await sequelize.transaction();
-        try{
-            await Order.destroy({ 
-                where: { id:res.locals.payload.id }, 
-                transaction: t 
-            });
-            await Detail.destroy({
-                where:{orderId:res.locals.payload.id}, 
-                transaction:t
-            });
-
-            await t.commit();
-        } catch(err){
-            await t.rollback();
-
-            next(err);
-        }
-
-        next(e);
+        return res.redirect(`/api/order/fail?orderId=${res.locals.payload.orderId}`)
     }
 }

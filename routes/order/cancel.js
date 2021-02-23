@@ -47,6 +47,8 @@ module.exports=async(req, res, next)=>{
     } catch(err){
         await t.rollback();
 
-        next(err);
+        setTimeout(()=>{
+            return res.redirect(`/api/order/cancel?orderId=${req.query.orderId.toString()}`);
+        }, 500);
     }
 }

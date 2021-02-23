@@ -1,6 +1,6 @@
 const axios=require('axios');
 
-const { Order, Detail, sequelize } = require("../../models");
+const { Order } = require("../../models");
 
 module.exports=async(req, res, next)=>{
     try{
@@ -38,24 +38,6 @@ module.exports=async(req, res, next)=>{
 
         return next();
     } catch(error){
-        const t = await sequelize.transaction();
-        try{
-            await Order.destroy({ 
-                where: { id:order[0].id }, 
-                transaction: t 
-            });
-            await Detail.destroy({
-                where:{orderId:order[0].id}, 
-                transaction:t
-            });
-
-            await t.commit();
-        } catch(err){
-            await t.rollback();
-
-            next(err);
-        }
-
-        next(error);
+        return res.redirect(`/api/order/fail?orderId=${req.query.orderId.toString()}`);
     }
 }

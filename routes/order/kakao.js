@@ -1,7 +1,15 @@
-const { Order, Detail, sequelize } = require("../../models");
+const { Order } = require("../../models");
 
 module.exports=async(req, res, next)=>{
-    try{       
+    try{
+        await Order.update({
+            paid:true
+        }, {
+            where:{
+                id:res.locals.payload.id
+            }
+        });
+
         req.session.destroy();
         
         const obj={
@@ -9,25 +17,7 @@ module.exports=async(req, res, next)=>{
         }
         const script=`<script type="text/javascript">window.opener.postMessage(${JSON.stringify(obj)}, 'http://localhost:3000');window.close();</script>`;
         return res.send(script);
-    } catch(error){        
-        const t = await sequelize.transaction();
-        try{
-            await Order.destroy({ 
-                where: { id:res.locals.payload.id }, 
-                transaction: t 
-            });
-            await Detail.destroy({
-                where:{orderId:res.locals.payload.id}, 
-                transaction:t
-            });
-
-            await t.commit();
-        } catch(err){
-            await t.rollback();
-
-            next(err);
-        }
-
-        next(error);
+    } catch(error){
+        return res.redirect(`/api/order/fail?orderId=${res.locals.payload.orderId}`)
     }
 }

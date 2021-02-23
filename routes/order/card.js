@@ -70,6 +70,6 @@ module.exports=async(req, res, next)=>{
     } catch(error){
         await t.rollback();
 
-        next(error);
+        return next(error);
     }
 }

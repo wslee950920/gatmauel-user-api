@@ -1,6 +1,6 @@
 const axios=require('axios');
 
-const { Order, Detail, Food, sequelize } = require("../../models");
+const { Detail, Food } = require("../../models");
 const {bizSignature}=require('../../lib/ncpSignature');
 
 const makeContent=(orderId, orderDetail, request, address, phone, time, price, nickname)=>{
@@ -55,24 +55,6 @@ module.exports=async(req, res, next)=>{
 
         return next();
     } catch(error){        
-        const t = await sequelize.transaction();
-        try{
-            await Order.destroy({ 
-                where: { id }, 
-                transaction: t 
-            });
-            await Detail.destroy({
-                where:{orderId:id}, 
-                transaction:t
-            });
-
-            await t.commit();
-        } catch(err){
-            await t.rollback();
-
-            next(err);
-        }
-
-        next(error);
+        return res.redirect(`/api/order/fail?orderId=${orderId}`);
     }
 }

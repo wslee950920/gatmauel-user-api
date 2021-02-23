@@ -41,7 +41,7 @@ module.exports=async(req, res, next)=>{
                 quantity:order.length,
                 total_amount:total,
                 tax_free_amount:0,
-                approval_url:`http://localhost:9090/api/order/approval?orderId=${orderId}&measure=kakao`,
+                approval_url:`http://localhost:9090/api/order/approval?orderId=${orderId}`,
                 cancel_url:`http://localhost:9090/api/order/cancel?orderId=${orderId}`,
                 fail_url:`http://localhost:9090/api/order/fail?orderId=${orderId}`
             },
@@ -79,6 +79,6 @@ module.exports=async(req, res, next)=>{
     } catch(error){
         await t.rollback();
 
-        next(error);
+        return next(error);
     }
 }
