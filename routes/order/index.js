@@ -14,6 +14,7 @@ const ready=require('./ready');
 const later=require('./later');
 const finish=require('./finish');
 const card=require('./card');
+const result=require('./result');
 
 const router = express.Router();
 
@@ -22,6 +23,8 @@ router.get('/approval', approval, alim, kakao);
 
 router.post('/pay/later', check, later, alim, finish);
 router.post('/pay/card', check, card, alim, finish);
+
+router.get('/result/:orderId', result);
 
 router.get('/distance', distance);
 router.get('/recent', isLoggedIn, recent);

@@ -5,7 +5,7 @@ module.exports=async(req, res, next)=>{
         req.session.destroy();
         
         const obj={
-            success:res.locals.payload
+            success:res.locals.payload.orderId
         }
         const script=`<script type="text/javascript">window.opener.postMessage(${JSON.stringify(obj)}, 'http://localhost:3000');window.close();</script>`;
         return res.send(script);

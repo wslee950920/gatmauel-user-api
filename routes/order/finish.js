@@ -13,7 +13,7 @@ module.exports=async(req, res, next)=>{
             }
         })
 
-        return res.json(res.locals.payload);
+        return res.json({orderId:res.locals.payload.orderId});
     } catch(e){        
         const t = await sequelize.transaction();
         try{
