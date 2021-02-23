@@ -1,47 +1,25 @@
-const axios=require('axios');
-
 const { Order, Detail, sequelize } = require("../../models");
 
 module.exports=async(req, res, next)=>{
-    const {orderId, order, total, phone, newId}=res.locals.payload;
-    try{
-        const result=await axios({
-            url:"https://kapi.kakao.com/v1/payment/ready",
-            method:'post',
-            params:{
-                cid:'TC0ONETIME',
-                partner_order_id:orderId,
-                partner_user_id:res.locals.user?res.locals.user.nick:('gatmauel'+phone.slice(-4)),
-                item_name:`${order[0].name}`+(order.length>1?` 외 ${order.length-1}`:''),
-                quantity:order.length,
-                total_amount:total,
-                tax_free_amount:0,
-                approval_url:`http://localhost:9090/api/order/approval?orderId=${orderId}&measure=kakao`,
-                cancel_url:`http://localhost:9090/api/order/cancel?orderId=${orderId}`,
-                fail_url:`http://localhost:9090/api/order/fail?orderId=${orderId}`
-            },
-            headers:{
-                'Authorization': `KakaoAK ${process.env.KAKAO_APP_ADMIN_KEY}`,
-                'Content-type': 'application/x-www-form-urlencoded;charset=utf-8'
-            }
-        })
+    try{       
+        req.session.destroy();
         
-        await Order.update(
-            {
-                tId:result.data.tid
-            }, {
-                where:{
-                    orderId,
-                },
-            }
-        );
-            
-        return res.json({result:result.data});
-    } catch(e){
+        const obj={
+            success:res.locals.payload
+        }
+        const script=`<script type="text/javascript">window.opener.postMessage(${JSON.stringify(obj)}, 'http://localhost:3000');window.close();</script>`;
+        return res.send(script);
+    } catch(error){        
         const t = await sequelize.transaction();
         try{
-            await Order.destroy({ where: { id:newId }, transaction: t });
-            await Detail.destroy({where:{orderId:newId}, transaction:t});
+            await Order.destroy({ 
+                where: { id:res.locals.payload.id }, 
+                transaction: t 
+            });
+            await Detail.destroy({
+                where:{orderId:res.locals.payload.id}, 
+                transaction:t
+            });
 
             await t.commit();
         } catch(err){
@@ -50,6 +28,6 @@ module.exports=async(req, res, next)=>{
             next(err);
         }
 
-        next(e);
+        next(error);
     }
 }

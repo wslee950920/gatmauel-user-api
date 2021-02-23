@@ -1,8 +1,9 @@
 const axios=require('axios');
 
-const { Order } = require("../../models");
+const { Order, Detail, sequelize } = require("../../models");
 
 module.exports=async(req, res, next)=>{
+    const t = await sequelize.transaction();
     try{
         const order=await Order.findAll({
             where:{
@@ -24,19 +25,28 @@ module.exports=async(req, res, next)=>{
         });
         
         if(result.data.status==='QUIT_PAYMENT'){
-            await Order.destroy({
-                where:{
-                    id:order[0].id
-                },
-            })
+            await Order.destroy({ 
+                where: { id:order[0].id }, 
+                transaction: t 
+            });
+            await Detail.destroy({
+                where:{orderId:order[0].id}, 
+                transaction:t
+            });
+
+            await t.commit();
             
             const obj={
                 cancel:'결제가 취소되었습니다.'
             }
             const script=`<script type="text/javascript">window.opener.postMessage(${JSON.stringify(obj)}, 'http://localhost:3000');window.close();</script>`
             return res.send(script);
+        } else{
+            throw new Error(result.data.status);
         }
     } catch(err){
+        await t.rollback();
+
         next(err);
     }
 }

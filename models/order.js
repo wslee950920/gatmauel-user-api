@@ -50,6 +50,10 @@ module.exports = (sequelize, DataTypes) =>
         allowNull: false,
         defaultValue:''
       },
+      measure:{
+        type:DataTypes.STRING(5),
+        allowNull:false,
+      }
     },
     {
       timestamps: true,

@@ -28,16 +28,16 @@ module.exports=async(req, res, next)=>{
         
         await Order.update({
             aId:result.data.aid,
-            paid:true
         }, {
             where:{
                 id:order[0].id
             }
         })
 
-        res.locals.order=order[0];
+        res.locals.payload=order[0];
+
         return next();
-    } catch(e){
+    } catch(error){
         const t = await sequelize.transaction();
         try{
             await Order.destroy({ 
@@ -56,6 +56,6 @@ module.exports=async(req, res, next)=>{
             next(err);
         }
 
-        next(e);
+        next(error);
     }
 }
