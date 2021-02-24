@@ -14,7 +14,7 @@ const makeMms=(phone, code)=>{
         "messages":[
             {
                 "to":phone,
-                "content":`갯마을 전화번호 인증코드 ${code}`
+                "content":`갯마을 전화번호 인증코드 [${code}]`
             }
         ]
     }

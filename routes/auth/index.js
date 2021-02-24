@@ -6,11 +6,15 @@ const Login = require("./login");
 const Logout = require("./logout");
 const kakaoV2=require('./kakaoV2');
 const AuthCallback=require('./callback');
+const email=require('./email');
+const password=require('./password');
 
 const { isLoggedIn, isNotLoggedIn } = require("../../lib/loginMiddleware");
 
 const router = express.Router();
 
+router.post('/find/password', isNotLoggedIn, password);
+router.post('/find/email', isNotLoggedIn, email);
 router.post("/register", isNotLoggedIn, Register);
 router.post("/check/nick", CheckNick);
 router.get("/check", isLoggedIn, Check);
