@@ -5,6 +5,9 @@ module.exports=async(req, res, next)=>{
         const order=await Order.findAll({
             where:{
                 orderId:req.params.orderId
+            },
+            attributes:{
+                exclude:['tId', 'aId']
             }
         });
         if(order.length!==1){

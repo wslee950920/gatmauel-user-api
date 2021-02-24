@@ -1,7 +1,7 @@
 const joi = require("joi");
 const jwt=require('jsonwebtoken');
 
-const { User, sequelize, Review } = require("../../models");
+const { User, sequelize, Review, Order } = require("../../models");
 
 module.exports = async (req, res, next) => {
   const schema = joi.object().keys({
@@ -40,6 +40,12 @@ module.exports = async (req, res, next) => {
       await Review.update({nick:req.body.nick}, {
         where:{
           userId:res.locals.user.id
+        },
+        transaction:t
+      });
+      await Order.update({customer:req.body.nick}, {
+        where:{
+          customerId:res.locals.user.id
         },
         transaction:t
       });
