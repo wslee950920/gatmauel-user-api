@@ -19,6 +19,6 @@ router.get("/list", list);
 router.delete("/remove/:id", isLoggedIn, getReviewById, checkOwnReview, remove);
 router.patch("/update/:id", isLoggedIn, getReviewById, checkOwnReview, update);
 router.get("/user", isLoggedIn, user);
-router.get("/hashtag", hashtag);
+router.post("/hashtag", hashtag);
 
 module.exports = router;

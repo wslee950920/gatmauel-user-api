@@ -1,3 +1,5 @@
+const joi=require('joi');
+
 const { Hashtag } = require("../../models");
 
 const isEnd=(page, reviews)=>{
@@ -9,9 +11,17 @@ const isEnd=(page, reviews)=>{
 }
 
 module.exports = async (req, res, next) => {
-  const query = req.query.hashtag.toString();
-  const page = parseInt(req.query.page.toString(), 10);
+  const schema = joi.object().keys({
+    hashtag: joi.string().required(),
+    page:joi.number().required()
+  });
+  const result = schema.validate(req.body);
+  if (result.error) {
+    return res.status(400).end();
+  }
 
+  const query = req.body.hashtag.toString();
+  const page = parseInt(req.body.page.toString(), 10);
   try {
     const hashtag = await Hashtag.findOne({ where: { title: query } });
     let reviews = [];
