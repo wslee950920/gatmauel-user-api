@@ -75,7 +75,9 @@ module.exports=async(req, res, next)=>{
     } catch(error){
         await t.rollback();
 
-        logger.error(error.message);
+        if(process.env.NODE_ENV==='production'){
+            logger.error(error.message);
+          }
 
         setTimeout(()=>{
             return res.redirect(`/api/order/fail?orderId=${req.query.orderId.toString()}`);

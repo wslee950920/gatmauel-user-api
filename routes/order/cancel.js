@@ -48,7 +48,9 @@ module.exports=async(req, res, next)=>{
     } catch(error){
         await t.rollback();
 
-        logger.error(error.message);
+        if(process.env.NODE_ENV==='production'){
+            logger.error(error.message);
+        }
 
         setTimeout(()=>{
             return res.redirect(`/api/order/cancel?orderId=${req.query.orderId.toString()}`);

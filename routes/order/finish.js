@@ -15,7 +15,9 @@ module.exports=async(req, res, next)=>{
 
         return res.json({orderId:res.locals.payload.orderId});
     } catch(error){        
-        logger.error(error.message);
+        if(process.env.NODE_ENV==='production'){
+            logger.error(error.message);
+          }
         
         return res.redirect(`/api/order/fail?orderId=${res.locals.payload.orderId}`)
     }

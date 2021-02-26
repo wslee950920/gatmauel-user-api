@@ -74,7 +74,9 @@ app.use((req, res, next) => {
 });
 
 app.use((err, req, res) => {
-  logger.error(err.message);
+  if(process.env.NODE_ENV==='production'){
+    logger.error(err.message);
+  }
 
   const error = req.app.get("env") === "development" ? err : {};
   res.status(err.status || 500);

@@ -1,11 +1,11 @@
-const {createLogger, format, transport}=require('winston');
+const {createLogger, format, transports}=require('winston');
 
 const logger=createLogger({
     level:'info',
     format:format.json(),
-    transport:[
-        new transport.defaultMaxListeners({filename:'combined.log'}),
-        new transport.File({filename:'error.log', level:'error'})
+    transports:[
+        new transports.File({filename:'combined.log'}),
+        new transports.File({filename:'error.log', level:'error'})
     ]
 });
 
