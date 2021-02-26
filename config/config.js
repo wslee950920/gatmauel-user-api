@@ -14,7 +14,7 @@ module.exports = {
     username: process.env.SEQUELIZE_PROD_USERNAME,
     password: process.env.SEQUELIZE_PROD_PASSWORD,
     database: "gatmauel_deploy",
-    host: "gatmauelDB",
+    host: process.env.SEQUELIZE_PROD_HOST,
     dialect: "mysql",
     logging: false,
     dialectOptions: { charset: "utf8mb4", dateStrings: true, typeCast: true }, // 날짜의 경우 문자열로 타입 변경 처리

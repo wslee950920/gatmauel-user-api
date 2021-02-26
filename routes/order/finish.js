@@ -1,5 +1,5 @@
 const { Order } = require("../../models");
-
+const logger=require('../../logger');
 
 module.exports=async(req, res, next)=>{
     try{    
@@ -14,7 +14,9 @@ module.exports=async(req, res, next)=>{
         })
 
         return res.json({orderId:res.locals.payload.orderId});
-    } catch(e){        
+    } catch(error){        
+        logger.error(error.message);
+        
         return res.redirect(`/api/order/fail?orderId=${res.locals.payload.orderId}`)
     }
 }

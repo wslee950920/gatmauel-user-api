@@ -1,6 +1,7 @@
 const axios=require('axios');
 
 const { Order, Detail, sequelize } = require("../../models");
+const logger=require('../../logger');
 
 module.exports=async(req, res, next)=>{
     const t = await sequelize.transaction();
@@ -44,8 +45,10 @@ module.exports=async(req, res, next)=>{
         } else{
             throw new Error(result.data.status);
         }
-    } catch(err){
+    } catch(error){
         await t.rollback();
+
+        logger.error(error.message);
 
         setTimeout(()=>{
             return res.redirect(`/api/order/cancel?orderId=${req.query.orderId.toString()}`);

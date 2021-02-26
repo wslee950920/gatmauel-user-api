@@ -1,6 +1,7 @@
 const axios=require('axios');
 
 const { Order, Detail, sequelize } = require("../../models");
+const logger=require('../../logger');
 
 module.exports=async(req, res, next)=>{
     const t = await sequelize.transaction();
@@ -71,8 +72,10 @@ module.exports=async(req, res, next)=>{
             await t.commit();
             return res.status(500).send(order[0].measure);
         }
-    } catch(err){
+    } catch(error){
         await t.rollback();
+
+        logger.error(error.message);
 
         setTimeout(()=>{
             return res.redirect(`/api/order/fail?orderId=${req.query.orderId.toString()}`);
