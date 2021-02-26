@@ -72,10 +72,10 @@ app.use(passport.initialize());
 app.use(jwtMiddleware);
 
 if(process.env.NODE_ENV==='production'){
-  app.use("/api/@user/auth", authRouter);
-  app.use("/api/@user/review", reviewRouter);
-  app.use("/api/@user/user", userRouter);
-  app.use('/api/@user/order', orderRouter);
+  app.use("/@user/auth", authRouter);
+  app.use("/@user/review", reviewRouter);
+  app.use("/@user/user", userRouter);
+  app.use('/@user/order', orderRouter);
 } else{
   app.use("/api/auth", authRouter);
   app.use("/api/review", reviewRouter);
