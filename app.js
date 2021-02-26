@@ -45,26 +45,43 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 const sessionOption={
   resave: false,
-    saveUninitialized: false,
-    secret: process.env.SESSION_SECRET,
-    cookie: {
-      maxAge: 1000 * 60 * 30,
-      httpOnly: true,
-      secure: false,
-    }
+  saveUninitialized: false,
+  secret: process.env.SESSION_SECRET,
+  cookie: {
+    maxAge: 1000 * 60 * 30,
+    httpOnly: true,
+    secure: false,
+  }
 }
 if(process.env.NODE_ENV==='production'){
+  const redis=require('redis');
+  const RedisStore=require('connect-redis')(session);
+
   sessionOption.proxy=true;
   sessionOption.cookie.secure=true;
+
+  const redisClient=redis.createClient({
+    host:process.env.REDIS_HOST,
+    port:process.env.REDIS_PORT,
+    logErrors:true,
+  });
+  sessionOption.store=new RedisStore({client:redisClient});
 }
 app.use(session(sessionOption));
 app.use(passport.initialize());
 app.use(jwtMiddleware);
 
-app.use("/api/auth", authRouter);
-app.use("/api/review", reviewRouter);
-app.use("/api/user", userRouter);
-app.use('/api/order', orderRouter);
+if(process.env.NODE_ENV==='production'){
+  app.use("/api/@user/auth", authRouter);
+  app.use("/api/@user/review", reviewRouter);
+  app.use("/api/@user/user", userRouter);
+  app.use('/api/@user/order', orderRouter);
+} else{
+  app.use("/api/auth", authRouter);
+  app.use("/api/review", reviewRouter);
+  app.use("/api/user", userRouter);
+  app.use('/api/order', orderRouter);
+}
 
 app.use((req, res, next) => {
   const err = new Error("Not Found");

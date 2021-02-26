@@ -50,7 +50,7 @@ module.exports=async(req, res, next)=>{
 
         transporter.sendMail(
             {
-              from: "gatmauel9300@gmail.com",
+              from: "no-reply@gatmauel.com",
               to: user[0].email,
               subject: "갯마을 비밀번호 초기화",
               html: `<p>갯마을 비밀번호가 [${newPassword}]로 초기화되었습니다.</p>

@@ -57,7 +57,7 @@ const Register = async (req, res, next) => {
     // send some mail
     transporter.sendMail(
       {
-        from: "gatmauel9300@gmail.com",
+        from: "no-reply@gatmauel.com",
         to: user.email,
         subject: "갯마을 회원가입 이메일 인증",
         html: `<p>갯마을 회원가입 이메일(${user.email}) 인증 링크입니다. 아래 링크를 클릭해주세요.</p>

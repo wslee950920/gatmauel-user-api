@@ -4,6 +4,7 @@ WORKDIR /gatmauel/user-api
 
 COPY . .
 
+ENV NODE_ENV production
 RUN npm install
 
 RUN apk add --no-cache tzdata 
