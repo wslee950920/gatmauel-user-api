@@ -16,7 +16,7 @@ module.exports=async(req, res, next)=>{
         const obj={
             success:res.locals.payload.orderId
         }
-        const script=`<script type="text/javascript">window.opener.postMessage(${JSON.stringify(obj)}, 'http://localhost:3000');window.close();</script>`;
+        const script=`<script type="text/javascript">window.opener.postMessage(${JSON.stringify(obj)}, 'https://${process.env.NODE_ENV==='production'?'www.gatmauel.com':'localhost'}');window.close();</script>`;
         return res.send(script);
     } catch(error){
         if(process.env.NODE_ENV==='production'){

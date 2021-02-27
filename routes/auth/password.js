@@ -55,7 +55,13 @@ module.exports=async(req, res, next)=>{
               subject: "갯마을 비밀번호 초기화",
               html: `<p>갯마을 비밀번호가 [${newPassword}]로 초기화되었습니다.</p>
                     <p>보안을 위해 비밀번호를 변경해주세요.</p>
-                    <a href="http://localhost:3000/login" target="_blank">http://localhost:3000/login</a>`
+                    <a href="https://${process.env.NODE_ENV==='production'
+                        ?'www.gatmauel.com'
+                        :'localhost'
+                    }/login" target="_blank">https://${
+                        process.env.NODE_ENV==='production'
+                        ?'www.gatmauel.com'
+                        :'localhost'}/login</a>`
             },
             (err) => {
               if (err) {

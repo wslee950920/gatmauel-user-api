@@ -42,7 +42,7 @@ module.exports=async(req, res, next)=>{
             const obj={
                 fail:'결제를 실패하였습니다. 잠시 후 다시 시도해주십시오.'
             }
-            const script=`<script type="text/javascript">window.opener.postMessage(${JSON.stringify(obj)}, 'http://localhost:3000');window.close();</script>`
+            const script=`<script type="text/javascript">window.opener.postMessage(${JSON.stringify(obj)}, 'https://${process.env.NODE_ENV==='production'?'www.gatmauel.com':'localhost'}');window.close();</script>`
             return res.send(script);
         } else if(order[0].measure==='later'){
             await t.commit();

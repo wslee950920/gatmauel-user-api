@@ -81,7 +81,14 @@ const kakaoV2= async (req, res, next)=>{
                         to: newUser.email,
                         subject: "갯마을 회원가입 이메일 인증",
                         html: `<p>갯마을 회원가입 이메일(${newUser.email}) 인증 링크입니다. 아래 링크를 클릭해주세요.</p>
-                            <a href="http://localhost:9090/api/auth/callback?token=${urlToken}" target="_blank">http://localhost:9090/api/auth/callback?token=${urlToken}</a>
+                            <a href="https://${process.env.NODE_ENV==='production'
+                                ?'www.gatmauel.com'
+                                :'localhost'
+                            }/@user/auth/callback?token=${urlToken}" target="_blank">https://${
+                                process.env.NODE_ENV==='production'
+                                ?'www.gatmauel.com'
+                                :'localhost'
+                            }/@user/auth/callback?token=${urlToken}</a>
                             <p>위 링크는 3일간 유효합니다.</p>`,
                     },
                     (err) => {
