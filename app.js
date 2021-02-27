@@ -71,17 +71,10 @@ app.use(session(sessionOption));
 app.use(passport.initialize());
 app.use(jwtMiddleware);
 
-if(process.env.NODE_ENV==='production'){
-  app.use("/@user/auth", authRouter);
-  app.use("/@user/review", reviewRouter);
-  app.use("/@user/user", userRouter);
-  app.use('/@user/order', orderRouter);
-} else{
-  app.use("/api/auth", authRouter);
-  app.use("/api/review", reviewRouter);
-  app.use("/api/user", userRouter);
-  app.use('/api/order', orderRouter);
-}
+app.use("/@user/auth", authRouter);
+app.use("/@user/review", reviewRouter);
+app.use("/@user/user", userRouter);
+app.use('/@user/order', orderRouter);
 
 app.use((req, res, next) => {
   const err = new Error("Not Found");
