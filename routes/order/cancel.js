@@ -37,11 +37,7 @@ module.exports=async(req, res, next)=>{
 
             await t.commit();
             
-            const obj={
-                cancel:'결제가 취소되었습니다.'
-            }
-            const script=`<script type="text/javascript">window.opener.postMessage(${JSON.stringify(obj)}, 'https://${process.env.NODE_ENV==='production'?'www.gatmauel.com':'localhost'}');window.close();</script>`
-            return res.send(script);
+            return res.redirect(`https://www.gatmauel.com/result/cancel?orderId=${order[0].orderId}`);
         } else{
             throw new Error(result.data.status);
         }
@@ -53,7 +49,7 @@ module.exports=async(req, res, next)=>{
         }
 
         setTimeout(()=>{
-            return res.redirect(`/api/order/cancel?orderId=${req.query.orderId.toString()}`);
+            return res.redirect(`/@user/order/cancel?orderId=${req.query.orderId.toString()}`);
         }, 500);
     }
 }

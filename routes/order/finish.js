@@ -19,6 +19,6 @@ module.exports=async(req, res, next)=>{
             logger.error(error.message);
           }
         
-        return res.redirect(`/api/order/fail?orderId=${res.locals.payload.orderId}`)
+        return res.redirect(`/@user/order/fail?orderId=${res.locals.payload.orderId}`)
     }
 }

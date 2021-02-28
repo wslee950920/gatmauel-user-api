@@ -39,11 +39,7 @@ module.exports=async(req, res, next)=>{
 
             await t.commit();
 
-            const obj={
-                fail:'결제를 실패하였습니다. 잠시 후 다시 시도해주십시오.'
-            }
-            const script=`<script type="text/javascript">window.opener.postMessage(${JSON.stringify(obj)}, 'https://${process.env.NODE_ENV==='production'?'www.gatmauel.com':'localhost'}');window.close();</script>`
-            return res.send(script);
+            return res.redirect(`https://www.gatmauel.com/result/fail?orderId=${order[0].orderId}`);
         } else if(order[0].measure==='later'){
             await t.commit();
             return res.status(500).send(order[0].measure);
@@ -80,7 +76,7 @@ module.exports=async(req, res, next)=>{
           }
 
         setTimeout(()=>{
-            return res.redirect(`/api/order/fail?orderId=${req.query.orderId.toString()}`);
+            return res.redirect(`/@user/order/fail?orderId=${req.query.orderId.toString()}`);
         }, 500);
     }
 }

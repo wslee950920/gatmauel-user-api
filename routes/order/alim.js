@@ -84,6 +84,6 @@ module.exports=async(req, res, next)=>{
 
         return next();
     } catch(error){        
-        return res.redirect(`/api/order/fail?orderId=${orderId}`);
+        return res.redirect(`/@user/order/fail?orderId=${orderId}`);
     }
 }

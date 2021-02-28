@@ -33,11 +33,11 @@ module.exports=async(req, res, next)=>{
                 id:order[0].id
             }
         })
-
+        
         res.locals.payload=order[0];
 
         return next();
     } catch(error){
-        return res.redirect(`/api/order/fail?orderId=${req.query.orderId.toString()}`);
+        return res.redirect(`/@user/order/fail?orderId=${req.query.orderId.toString()}`);
     }
 }
