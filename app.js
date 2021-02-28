@@ -28,7 +28,7 @@ const userRouter = require("./routes/user");
 const orderRouter = require('./routes/order');
 
 app.use(cors({
-  origin:true,
+  origin:'https://www.gatmauel.com',
   credentials:true,
   exposedHeaders:['Last-Page']
 }));
