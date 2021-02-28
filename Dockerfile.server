@@ -9,5 +9,7 @@ ENV TZ Asia/Seoul
 ENV NODE_ENV production
 RUN npm install
 
+EXPOSE 9090
+
 RUN chmod +x docker-entrypoint-server.sh
 ENTRYPOINT ./docker-entrypoint-server.sh

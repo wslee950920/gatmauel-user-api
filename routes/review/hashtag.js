@@ -2,11 +2,11 @@ const joi=require('joi');
 
 const { Hashtag } = require("../../models");
 
-const isEnd=(page, reviews)=>{
-  if(reviews.length===0){
+const isEnd=(page, count)=>{
+  if(count===0){
     return true;
   } else{
-    return page===Math.ceil(reviews.length/10)
+    return page===Math.ceil(count/10)
   }
 }
 
@@ -25,15 +25,19 @@ module.exports = async (req, res, next) => {
   try {
     const hashtag = await Hashtag.findOne({ where: { title: query } });
     let reviews = [];
+    let count=0;
     if (hashtag) {
       reviews = await hashtag.getReviews({
         order: [["createdAt", "DESC"]],
+        limit: 10,
+        offset: (page - 1) * 10
       });
+      count = await hashtag.countReviews()
     }
 
     return res.json({
-      reviews:reviews.slice(((page-1)*10), (page*10)-1),
-      is_end:isEnd(page, reviews)
+      reviews,
+      is_end:isEnd(page, count)
     });
   } catch (error) {
     return next(error);

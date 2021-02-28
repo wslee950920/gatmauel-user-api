@@ -63,11 +63,11 @@ const Register = async (req, res, next) => {
         html: `<p>갯마을 회원가입 이메일(${user.email}) 인증 링크입니다. 아래 링크를 클릭해주세요.</p>
               <a href="https://${
                 process.env.NODE_ENV==='production'
-                ?'www.gatmauel.com'
+                ?'user.gatmauel.com'
                 :'localhost'
               }/@user/auth/callback?token=${token}" target="_blank">https://${
                 process.env.NODE_ENV==='production'
-                ?'www.gatmauel.com'
+                ?'user.gatmauel.com'
                 :'localhost'
               }/@user/auth/callback?token=${token}</a>
               <p>위 링크는 3일간 유효합니다.</p>`,

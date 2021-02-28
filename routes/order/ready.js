@@ -41,9 +41,9 @@ module.exports=async(req, res, next)=>{
                 quantity:order.length,
                 total_amount:total,
                 tax_free_amount:0,
-                approval_url:`https://${process.env.NODE_ENV==='production'?'www.gatmauel.com':'localhost'}/@user/order/approval?orderId=${orderId}`,
-                cancel_url:`https://${process.env.NODE_ENV==='production'?'www.gatmauel.com':'localhost'}/@user/order/cancel?orderId=${orderId}`,
-                fail_url:`https://${process.env.NODE_ENV==='production'?'www.gatmauel.com':'localhost'}/@user/order/fail?orderId=${orderId}`
+                approval_url:`https://${process.env.NODE_ENV==='production'?'user.gatmauel.com':'localhost'}/@user/order/approval?orderId=${orderId}`,
+                cancel_url:`https://${process.env.NODE_ENV==='production'?'user.gatmauel.com':'localhost'}/@user/order/cancel?orderId=${orderId}`,
+                fail_url:`https://${process.env.NODE_ENV==='production'?'user.gatmauel.com':'localhost'}/@user/order/fail?orderId=${orderId}`
             },
             headers:{
                 'Authorization': `KakaoAK ${process.env.KAKAO_APP_ADMIN_KEY}`,
