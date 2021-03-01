@@ -1,8 +1,10 @@
-const { Order } = require("../../models");
-const logger=require('../../logger');
+const { Order } = require("../../../models");
+const logger=require('../../../logger');
 
 module.exports=async(req, res, next)=>{
-    try{
+    try{    
+        req.session.destroy();
+
         await Order.update({
             paid:true
         }, {
@@ -11,13 +13,11 @@ module.exports=async(req, res, next)=>{
             }
         });
 
-        req.session.destroy();
-        
-        return res.redirect(`https://${process.env.NODE_ENV==='production'?'www.gatmauel.com':'localhost'}/result?orderId=${res.locals.payload.orderId}`);
-    } catch(error){
+        return res.end();
+    } catch(error){        
         if(process.env.NODE_ENV==='production'){
             logger.error(error.message);
-        }
+          }
         
         return res.redirect(`/@user/order/fail?orderId=${res.locals.payload.orderId}`)
     }

@@ -1,20 +1,22 @@
 const axios=require('axios');
 const joi=require('joi');
 
-const { Order } = require("../../models");
-const logger=require('../../logger');
+const { Order } = require("../../../models");
+const logger=require('../../../logger');
 
 module.exports=async(req, res, next)=>{
-    const schema = joi.object().keys({
-        merchant_uid:joi.string().max(10).required(),
-        imp_uid:joi.string().max(20)
-    });
-    const result = schema.validate(req.body);
-    if (result.error) {
-        return res.status(400).end();
-    }
-    const { imp_uid, merchant_uid } = req.body;
+    const { imp_uid, merchant_uid } = req.query;
     try{
+        const schema = joi.object().keys({
+            merchant_uid:joi.string().length(10).required(),
+            imp_uid:joi.string().max(20).required(),
+            imp_success:joi.bool().required()
+        });
+        const result = schema.validate(req.query);
+        if (result.error) {
+            throw new Error(result.error);
+        }
+
         const getToken=await axios.post('https://api.iamport.kr/users/getToken', {
                 imp_key:process.env.IAMPORT_REST_API_KEY,
                 imp_secret:process.env.IMAPORT_REST_API_SECRET
@@ -48,11 +50,13 @@ module.exports=async(req, res, next)=>{
                 },
             });
     
-            res.locals.payload=order;
+            res.locals.payload=order[0];
     
             return next();
         } else if(status==='cancelled'){
             return res.redirect(`/@user/order/cancel?orderId=${merchant_uid}`);
+        } else if(status==='failed'){
+            return res.redirect(`/@user/order/fail?orderId=${merchant_uid}`)
         }
     } catch(error){
         if(process.env.NODE_ENV==='production'){

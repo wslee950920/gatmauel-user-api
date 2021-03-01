@@ -1,7 +1,14 @@
 const axios=require('axios');
+const joi=require('joi');
 
 module.exports=async (req, res, next)=>{
-    const {goal}=req.query;
+    const schema = joi.object().keys({
+        goal:joi.string().required(),
+    });
+    const verify = schema.validate(req.body);
+    if (verify.error) {
+        return res.status(400).end(); 
+    }
 
     try{
         const kakao=await axios.get("https://dapi.kakao.com/v2/local/search/address.json",{
@@ -9,7 +16,7 @@ module.exports=async (req, res, next)=>{
                 'Authorization' : `KakaoAK ${process.env.KAKAO_REST_API_KEY}`
             },
             params:{
-                query:goal
+                query:req.body.goal
             }
         });
         if(kakao){

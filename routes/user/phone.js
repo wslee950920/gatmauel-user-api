@@ -32,13 +32,6 @@ module.exports = async (req, res, next)=>{
     const {phone}=req.body;
     const code=Math.random().toString().substring(2, 8);
     try{
-        if(res.locals.user){
-            const exPhone=await User.findOne({where:{phone}});
-            if(exPhone){
-                return res.status(409).end();
-            }
-        }
-
         await axios.post(`https://sens.apigw.ntruss.com/sms/v2/services/${process.env.NAVER_SMS_SERVICE_ID}/messages`, 
             makeMms(phone, code),
             {

@@ -3,20 +3,23 @@ const express = require("express");
 const { isLoggedIn } = require("../../lib/loginMiddleware");
 
 const distance=require('./distance');
-const alim=require('./alim');
 const recent=require('./recent');
-const approval=require('./approval');
-const cancel=require('./cancel');
-const fail=require('./fail');
-const kakao=require('./kakao');
-const check=require('./check');
-const ready=require('./ready');
-const later=require('./later');
-const finish=require('./finish');
-const card=require('./card');
 const result=require('./result');
-const reason=require('./reason');
-const confirm=require('./confirm');
+const later=require('./later/later');
+
+const alim=require('./common/alim');
+const cancel=require('./common/cancel');
+const fail=require('./common/fail');
+const check=require('./common/check');
+const finish=require('./common/finish');
+
+const approval=require('./kakao/approval');
+const kakao=require('./kakao/kakao');
+const ready=require('./kakao/ready');
+
+const card=require('./card/card');
+const confirm=require('./card/confirm');
+const mobile=require('./card/mobile');
 
 const router = express.Router();
 
@@ -25,17 +28,16 @@ router.get('/approval', approval, alim, kakao);
 
 router.post('/pay/card', check, card);
 router.post('/confirm', confirm, alim, finish);
+router.get('/mobile', mobile, alim, finish);
 
 router.post('/pay/later', check, later, alim, finish);
 
 router.get('/result/:orderId', result);
 
-router.get('/distance', distance);
+router.post('/distance', distance);
 router.get('/recent', isLoggedIn, recent);
 
 router.get('/cancel', cancel);
 router.get('/fail', fail);
-
-router.get('/reason/:orderId', reason);
 
 module.exports = router;

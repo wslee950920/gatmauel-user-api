@@ -1,6 +1,7 @@
 const axios=require('axios');
 const aws = require("aws-sdk");
 const nodemailer = require("nodemailer");
+const joi=require('joi');
 
 aws.config.update({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -14,16 +15,24 @@ const transporter = nodemailer.createTransport({
     }),
 });
 
-const { Order, Detail, sequelize } = require("../../models");
-const logger=require('../../logger');
+const { Order, Detail, sequelize } = require("../../../models");
+const logger=require('../../../logger');
 
 module.exports=async(req, res, next)=>{
     let measure=null;
     const t = await sequelize.transaction();
     try{
+        const schema = joi.object().keys({
+            orderId:joi.string().length(10).required(),
+        });
+        const verify = schema.validate(req.query);
+        if (verify.error) {
+            throw new Error(verify.error); 
+        }
+
         const order=await Order.findAll({
             where:{
-                orderId:req.query.orderId.toString()
+                orderId:req.query.orderId
             }
         });
         measure=order[0].measure;

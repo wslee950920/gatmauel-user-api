@@ -1,4 +1,4 @@
-const { Order, Detail, sequelize } = require("../../models");
+const { Order, Detail, sequelize } = require("../../../models");
 
 module.exports=async(req, res, next)=>{
     const {phone, total, request, order, deli, address, detail, orderId}=req.body;

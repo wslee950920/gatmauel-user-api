@@ -1,6 +1,6 @@
 const joi=require('joi');
 
-const { User } = require("../../models");
+const { User } = require("../../../models");
 
 module.exports=async(req, res, next)=>{
     const schema = joi.object().keys({

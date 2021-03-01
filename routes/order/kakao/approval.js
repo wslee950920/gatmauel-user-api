@@ -1,13 +1,24 @@
 const axios=require('axios');
+const joi=require('joi');
 
-const { Order } = require("../../models");
-const logger=require('../../logger');
+const { Order } = require("../../../models");
+const logger=require('../../../logger');
 
 module.exports=async(req, res, next)=>{
+    const {orderId, pg_token}=req.query;
     try{
+        const schema = joi.object().keys({
+            orderId:joi.string().length(10).required(),
+            pg_token:joi.string().required(),
+        });
+        const verify = schema.validate(req.query);
+        if (verify.error) {
+            throw new Error(verify.error); 
+        }
+
         const order=await Order.findAll({
             where:{
-                orderId:req.query.orderId.toString()
+                orderId
             }
         });
 
@@ -23,7 +34,7 @@ module.exports=async(req, res, next)=>{
                 tid:order[0].tId,
                 partner_order_id:order[0].orderId,
                 partner_user_id:res.locals.user?res.locals.user.nick:('gatmauel'+order[0].phone.slice(-4)),
-                pg_token:req.query.pg_token.toString(),
+                pg_token
             }
         });
         
@@ -43,6 +54,6 @@ module.exports=async(req, res, next)=>{
             logger.error(error.message);
         }
         
-        return res.redirect(`/@user/order/fail?orderId=${req.query.orderId.toString()}`);
+        return res.redirect(`/@user/order/fail?orderId=${orderId}`);
     }
 }
