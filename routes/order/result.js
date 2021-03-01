@@ -8,10 +8,18 @@ module.exports=async(req, res, next)=>{
             },
             attributes:{
                 exclude:['tId', 'aId']
-            }
+            },
+            paranoid: false
         });
         if(order.length!==1){
             return res.status(400).end();
+        }
+        if(order[0].deletedAt){
+            if(order[0].paid){
+                return res.status(410).end();
+            } else{
+                return next((order[0].deli?'delivery':'pickup'));
+            }
         }
 
         const details=await Detail.findAll({
@@ -22,13 +30,13 @@ module.exports=async(req, res, next)=>{
             include:{
                 model:Food,
             }
-        })
+        });
 
         return res.json({
             order:order[0],
             details
         });
-    } catch(err){
-        next(err);
+    } catch(error){
+        return next(error);
     }
 }

@@ -45,8 +45,8 @@ const AuthCallback = (req, res, next) => {
                     <h2>${decoded.email}인증이 완료되었습니다.</h2>
                 </div>
             `);
-    } catch (e) {
-      next(e);
+    } catch (error) {
+      return next(error);
     }
   });
 };

@@ -3,7 +3,8 @@ module.exports=async(req, res, next)=>{
         'Content-Type': 'text/event-stream',
         'Connection': 'keep-alive',
         'Cache-Control': 'no-cache',
-        "Access-Control-Allow-Origin":'https://www.gatmauel.com'
+        "Access-Control-Allow-Origin":'https://www.gatmauel.com',
+        'X-Accel-Buffering': 'no'
     });
     
     const timer=setInterval(()=>{

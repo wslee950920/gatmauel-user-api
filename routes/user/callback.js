@@ -60,7 +60,7 @@ module.exports=async(req, res, next)=>{
 
             return res.status(404).end();
         }
-    } catch(e){
-        next(e);
+    } catch(error){
+        return next(error);
     }
 }

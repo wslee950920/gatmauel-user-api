@@ -74,7 +74,7 @@ module.exports = async (req, res, next)=>{
         } else{
             return res.json({updatedAt:Date.now()});
         }
-    } catch(e){
-        next(e);
+    } catch(error){
+        return next(error);
     }
 }

@@ -15,7 +15,7 @@ module.exports=async(req, res, next)=>{
         if(order[0].deletedAt){
             return res.end();
         }
-    } catch(error){
+    } catch(error){        
         return next(error);
     }
 }

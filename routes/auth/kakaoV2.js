@@ -92,9 +92,7 @@ const kakaoV2= async (req, res, next)=>{
                             <p>위 링크는 3일간 유효합니다.</p>`,
                     },
                     (err) => {
-                        if (err) {  
-                            return next(err);
-                        }
+                        return next(err);
                     }
                 );
             }
@@ -110,7 +108,7 @@ const kakaoV2= async (req, res, next)=>{
                 })
                 .json(data);
         }
-    } catch (error) {    
+    } catch (error) {            
         return next(error);
     }
 }

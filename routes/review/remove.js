@@ -11,9 +11,9 @@ module.exports = async (req, res, next) => {
     await t.commit();
 
     return res.json({deleted:id});
-  } catch (e) {
+  } catch (error) {
     await t.rollback();
 
-    next(e);
+    return next(error);
   }
 };

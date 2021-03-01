@@ -42,7 +42,7 @@ module.exports = async (req, res, next) => {
     } else {
       return res.status(404).end();
     }
-  } catch (error) {
+  } catch (error) {    
     return next(error);
   }
 };

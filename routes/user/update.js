@@ -78,9 +78,9 @@ module.exports = async (req, res, next) => {
         phone:req.body.phone
        }
       });
-  } catch (e) {
+  } catch (error) {
     await t.rollback();
 
-    next(e);
+    return next(error);
   }
 };

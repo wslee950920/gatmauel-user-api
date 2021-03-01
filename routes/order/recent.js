@@ -14,8 +14,8 @@ module.exports=async(req, res, next)=>{
             });
     
             return res.send(result);
-        } catch(e){
-            next(e);
+        } catch(error){
+            return next(error);
         }
-    } 
+    }
 }   

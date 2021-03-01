@@ -2,6 +2,7 @@ const axios=require('axios');
 
 const { Detail, Food } = require("../../models");
 const {bizSignature}=require('../../lib/ncpSignature');
+const logger=require('../../logger');
 
 const makeContent=(orderId, orderDetail, request, address, phone, time, price, nickname, url)=>{
     return `주문번호 : ${orderId}\n주문내역 : \n${orderDetail}\n요청사항 : ${request}\n배달주소 : ${address}\n전화번호 : ${phone}\n주문시간 : ${time}\n결제금액 : ${price}원\n닉네임 : ${nickname}\n\n${url}`
@@ -83,7 +84,11 @@ module.exports=async(req, res, next)=>{
         })
 
         return next();
-    } catch(error){        
+    } catch(error){     
+        if(process.env.NODE_ENV==='production'){
+            logger.error(error.message);
+        }
+           
         return res.redirect(`/@user/order/fail?orderId=${orderId}`);
     }
 }

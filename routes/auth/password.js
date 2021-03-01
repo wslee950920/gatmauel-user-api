@@ -64,9 +64,7 @@ module.exports=async(req, res, next)=>{
                         :'localhost'}/login</a>`
             },
             (err) => {
-              if (err) {
                 return next(err);
-              }
             }
         );
 
@@ -79,7 +77,7 @@ module.exports=async(req, res, next)=>{
         });
 
         return res.status(201).end();
-    } catch(error){
+    } catch(error){        
         return next(error);
     }
 }

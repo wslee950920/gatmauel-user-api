@@ -1,5 +1,3 @@
-const schedule = require("node-schedule");
-
 const { Order, Detail, sequelize } = require("../../models");
 
 module.exports=async(req, res, next)=>{
@@ -28,22 +26,10 @@ module.exports=async(req, res, next)=>{
         },{
             transaction:t
         })));
-            
-        await t.commit();
-
-        const end = new Date();
-        end.setDate(end.getDate() + 3);
-        schedule.scheduleJob(end, () => {
-            Order.destroy({ 
-                where: { 
-                    id:newOrder.id,
-                    paid:false 
-                },  
-            });
-        });
 
         res.locals.payload=newOrder;
 
+        await t.commit();
         return next();
     } catch(error){
         await t.rollback();

@@ -16,7 +16,6 @@ module.exports=async(req, res, next)=>{
         deli:joi.boolean().required(),
         address:joi.string().max(50).allow(''),
         detail:joi.string().max(50).allow(''),
-        imp:joi.string().max(20)
     });
     const result = schema.validate(req.body);
     if (result.error) {

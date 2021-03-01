@@ -45,9 +45,9 @@ module.exports = async (req, res, next) => {
     await t.commit();
 
     return res.json({updated:id, content});
-  } catch (e) {
+  } catch (error) {
     await t.rollback();
     
-    next(e);
+    return next(error);
   }
 };

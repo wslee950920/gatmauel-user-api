@@ -1,4 +1,3 @@
-const schedule = require("node-schedule");
 const axios=require('axios');
 
 const { Order, Detail, sequelize } = require("../../models");
@@ -63,18 +62,6 @@ module.exports=async(req, res, next)=>{
         );
             
         await t.commit();
-
-        const end = new Date();
-        end.setDate(end.getDate() + 3);
-        schedule.scheduleJob(end, () => {
-            Order.destroy({ 
-                where: { 
-                    id:newOrder.id,
-                    paid:false 
-                },  
-            });
-        });
-
         return res.json({result:result.data});
     } catch(error){
         await t.rollback();

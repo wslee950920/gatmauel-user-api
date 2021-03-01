@@ -13,7 +13,7 @@ module.exports=async(req, res, next)=>{
             }
         })
 
-        return res.json({orderId:res.locals.payload.orderId});
+        return res.end();
     } catch(error){        
         if(process.env.NODE_ENV==='production'){
             logger.error(error.message);

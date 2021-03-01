@@ -1,4 +1,5 @@
 const joi = require("joi");
+
 const { Review, Comment } = require("../../../models");
 
 module.exports = async (req, res, next) => {
@@ -26,7 +27,7 @@ module.exports = async (req, res, next) => {
     res.locals.review = review;
 
     return next();
-  } catch (e) {
-    next(e);
+  } catch (error) {
+    return next(error);
   }
 };

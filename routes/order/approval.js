@@ -1,6 +1,7 @@
 const axios=require('axios');
 
 const { Order } = require("../../models");
+const logger=require('../../logger');
 
 module.exports=async(req, res, next)=>{
     try{
@@ -38,6 +39,10 @@ module.exports=async(req, res, next)=>{
 
         return next();
     } catch(error){
+        if(process.env.NODE_ENV==='production'){
+            logger.error(error.message);
+        }
+        
         return res.redirect(`/@user/order/fail?orderId=${req.query.orderId.toString()}`);
     }
 }

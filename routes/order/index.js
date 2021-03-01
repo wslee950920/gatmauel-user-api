@@ -16,21 +16,26 @@ const finish=require('./finish');
 const card=require('./card');
 const result=require('./result');
 const reason=require('./reason');
+const confirm=require('./confirm');
 
 const router = express.Router();
 
 router.post('/pay/kakao', check, ready);
 router.get('/approval', approval, alim, kakao);
 
+router.post('/pay/card', check, card);
+router.post('/confirm', confirm, alim, finish);
+
 router.post('/pay/later', check, later, alim, finish);
-router.post('/pay/card', check, card, alim, finish);
 
 router.get('/result/:orderId', result);
 
 router.get('/distance', distance);
 router.get('/recent', isLoggedIn, recent);
+
 router.get('/cancel', cancel);
-router.get('/reason/:orderId', reason);
 router.get('/fail', fail);
+
+router.get('/reason/:orderId', reason);
 
 module.exports = router;
