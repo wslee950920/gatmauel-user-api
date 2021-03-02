@@ -16,7 +16,7 @@ module.exports=async(req, res, next)=>{
         return res.redirect(`https://${process.env.NODE_ENV==='production'?'www.gatmauel.com':'localhost'}/result?orderId=${res.locals.payload.orderId}`);
     } catch(error){
         if(process.env.NODE_ENV==='production'){
-            logger.error(error.message);
+            logger.error(error);
         }
         
         return res.redirect(`/@user/order/fail?orderId=${res.locals.payload.orderId}`)

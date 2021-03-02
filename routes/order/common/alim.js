@@ -14,7 +14,17 @@ const orderTime=(time)=>{
 }
 
 module.exports=async(req, res, next)=>{
-    const {id, orderId, request, address, detail, phone, createdAt, total, customer }=res.locals.payload;
+    const {
+        id, 
+        orderId, 
+        request, 
+        address, 
+        detail, 
+        phone, 
+        createdAt, 
+        total, 
+        customer, 
+        deli }=res.locals.payload;
     try{       
         const details=await Detail.findAll({
             attributes:['num'],
@@ -38,12 +48,12 @@ module.exports=async(req, res, next)=>{
                         return ` ${detail.food.name}x${detail.num}`
                     }).join(',\n'),
                     request,
-                    address?address+', '+detail:'포장주문',
+                    (deli?address+', '+detail:'포장주문'),
                     phone,
                     orderTime(createdAt),
                     total,
                     customer,
-                    (process.env.NODE_ENV==='production'?`https://www.gatmauel.com/result?orderId=${orderId}`:`https://localhost/result?orderId=${orderId}`)
+                    `https://www.gatmauel.com/result?orderId=${orderId}`
                 )
             }]
         },{
@@ -66,12 +76,12 @@ module.exports=async(req, res, next)=>{
                         return ` ${detail.food.name}x${detail.num}`
                     }).join(',\n'),
                     request,
-                    address?address+', '+detail:'포장주문',
+                    deli?address+', '+detail:'포장주문',
                     phone,
                     orderTime(createdAt),
                     total,
                     customer,
-                    (process.env.NODE_ENV==='production'?`https://www.gatmauel.com/result?orderId=${orderId}`:`https://localhost/result?orderId=${orderId}`)
+                    `https://www.gatmauel.com/result?orderId=${orderId}`
                 )
             }]
         },{
@@ -86,7 +96,7 @@ module.exports=async(req, res, next)=>{
         return next();
     } catch(error){     
         if(process.env.NODE_ENV==='production'){
-            logger.error(error.message);
+            logger.error(error);
         }
            
         return res.redirect(`/@user/order/fail?orderId=${orderId}`);

@@ -5,17 +5,18 @@ const { Order } = require("../../../models");
 const logger=require('../../../logger');
 
 module.exports=async(req, res, next)=>{
-    const schema = joi.object().keys({
-        merchant_uid:joi.string().max(10).required(),
-        imp_uid:joi.string().max(20).required(),
-        status:joi.string().max(10).required()
-    });
-    const result = schema.validate(req.body);
-    if (result.error) {
-        return res.status(400).end();
-    }
     const { imp_uid, merchant_uid } = req.body;
     try{
+        const schema = joi.object().keys({
+            merchant_uid:joi.string().length(10).required(),
+            imp_uid:joi.string().max(20).required(),
+            status:joi.string().max(10).required()
+        });
+        const result = schema.validate(req.body);
+        if (result.error) {
+            return res.status(400).end();
+        }
+        
         const getToken=await axios.post('https://api.iamport.kr/users/getToken', {
                 imp_key:process.env.IAMPORT_REST_API_KEY,
                 imp_secret:process.env.IMAPORT_REST_API_SECRET
@@ -57,7 +58,7 @@ module.exports=async(req, res, next)=>{
         }
     } catch(error){
         if(process.env.NODE_ENV==='production'){
-            logger.error(error.message);
+            logger.error(error);
         }
 
         return res.redirect(`/@user/order/fail?orderId=${merchant_uid}`);

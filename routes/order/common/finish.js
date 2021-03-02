@@ -16,7 +16,7 @@ module.exports=async(req, res, next)=>{
         return res.end();
     } catch(error){        
         if(process.env.NODE_ENV==='production'){
-            logger.error(error.message);
+            logger.error(error);
           }
         
         return res.redirect(`/@user/order/fail?orderId=${res.locals.payload.orderId}`)

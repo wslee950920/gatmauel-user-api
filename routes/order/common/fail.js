@@ -16,10 +16,8 @@ const transporter = nodemailer.createTransport({
 });
 
 const { Order, Detail, sequelize } = require("../../../models");
-const logger=require('../../../logger');
 
 module.exports=async(req, res, next)=>{
-    let measure=null;
     const t = await sequelize.transaction();
     try{
         const schema = joi.object().keys({
@@ -35,7 +33,6 @@ module.exports=async(req, res, next)=>{
                 orderId:req.query.orderId
             }
         });
-        measure=order[0].measure;
 
         await Order.destroy({ 
             where: { id:order[0].id }, 
@@ -46,7 +43,7 @@ module.exports=async(req, res, next)=>{
             transaction:t
         });
 
-        if(measure==='kakao'){
+        if(order[0].measure==='kakao'){
             await axios({
                 method:'post',
                 url:"https://kapi.kakao.com/v1/payment/cancel",
@@ -61,13 +58,7 @@ module.exports=async(req, res, next)=>{
                     cancel_tax_free_amount:0
                 }
             });
-
-            await t.commit();
-            return res.redirect(`https://${process.env.NODE_ENV==='production'?'www.gatmauel.com':'localhost'}/result?orderId=${order[0].orderId}`);
-        } else if(measure==='later'){
-            await t.commit();
-            return next(measure);
-        } else if(measure==='card'){
+        } else if(order[0].measure==='card'){
             const getToken=await axios.post('https://api.iamport.kr/users/getToken', {
                 imp_key:process.env.IAMPORT_REST_API_KEY,
                 imp_secret:process.env.IMAPORT_REST_API_SECRET
@@ -89,10 +80,16 @@ module.exports=async(req, res, next)=>{
                     "Authorization": `Bearer ${access_token}` // 발행된 액세스 토큰
                 }
             });
-
+        } else if(order[0].measure==='later'){
             await t.commit();
-            return res.status(204).end();
+            return next(order[0].measure);
         }
+
+        await t.commit();
+        if(order[0].measure==='card'&&req.useragent.isDesktop){
+            return res.end();
+        }
+        return res.redirect(`https://${process.env.NODE_ENV==='production'?'www.gatmauel.com':'localhost'}/result?orderId=${order[0].orderId}`);
     } catch(error){
         await t.rollback();
 
@@ -105,26 +102,11 @@ module.exports=async(req, res, next)=>{
                     </br>
                     <p>${error.message}</p>`,
             },
-            (err) => {
-                if(measure==='kakao'){
-                    if(process.env.NODE_ENV==='production'){
-                        logger.error(err.message);
-                    }
-                    return res.redirect(`https://${process.env.NODE_ENV==='production'?'www.gatmauel.com':'localhost'}/error/fail`);
-                } else if(measure==='card'){
-                    return next(err);
-                }
+            (err) => {                    
+                return next(err);
             }
         );
 
-        if(measure==='kakao'){
-            if(process.env.NODE_ENV==='production'){
-                logger.error(error.message);
-            }
-
-            return res.redirect(`https://${process.env.NODE_ENV==='production'?'www.gatmauel.com':'localhost'}/error/fail`);
-        } else if(measure==='card'){
-            return next(error);
-        }
+        return next(error);
     }
 }

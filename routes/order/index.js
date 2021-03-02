@@ -28,7 +28,7 @@ router.get('/approval', approval, alim, kakao);
 
 router.post('/pay/card', check, card);
 router.post('/confirm', confirm, alim, finish);
-router.get('/mobile', mobile, alim, finish);
+router.get('/mobile', mobile);
 
 router.post('/pay/later', check, later, alim, finish);
 
@@ -38,6 +38,8 @@ router.post('/distance', distance);
 router.get('/recent', isLoggedIn, recent);
 
 router.get('/cancel', cancel);
+router.post('/cancel', cancel);
 router.get('/fail', fail);
+router.post('/fail', fail);
 
 module.exports = router;

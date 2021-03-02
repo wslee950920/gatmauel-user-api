@@ -7,6 +7,7 @@ const passport = require("passport");
 const cors=require('cors');
 const helmet=require('helmet');
 const hpp=require('hpp');
+const useragent = require('express-useragent');
 require("dotenv").config();
 
 const { sequelize } = require("./models");
@@ -78,6 +79,7 @@ if (process.env.NODE_ENV === "production") {
 }
 app.use(session(sessionOption));
 app.use(passport.initialize());
+app.use(useragent.express());
 app.use(jwtMiddleware);
 
 app.use("/@user/auth", authRouter);
@@ -94,7 +96,7 @@ app.use((req, res, next) => {
 
 app.use((err, req, res) => {
   if(process.env.NODE_ENV==='production'){
-    logger.error(err.message);
+    logger.error(err);
   }
 
   const error = req.app.get("env") === "development" ? err : {};

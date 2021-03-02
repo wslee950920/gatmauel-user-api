@@ -1,16 +1,45 @@
-const {createLogger, format, transports}=require('winston');
+const { createLogger, format, transports } = require("winston")
+require("winston-daily-rotate-file")
+const fs = require("fs")
 
-const logger=createLogger({
-    level:'info',
-    format:format.json(),
-    transports:[
-        new transports.File({filename:'combined.log'}),
-        new transports.File({filename:'error.log', level:'error'})
-    ]
-});
+const env = process.env.NODE_ENV || "development"
+const logDir = "log"
 
-if(process.env.NODE_ENV!=='production'){
-    logger.add(new transports.Console({format:format.simple()}));
+// Create the log directory if it does not exist
+if (!fs.existsSync(logDir)) {
+	fs.mkdirSync(logDir)
 }
+
+const dailyRotateFileTransport = new transports.DailyRotateFile({
+  level: "debug",
+  filename: `${logDir}/%DATE%-gatmauel.log`,
+  datePattern: "YYYY-MM-DD",
+  zippedArchive: true,
+  maxSize: "20m",
+  maxFiles: "14d"
+})
+
+const logger = createLogger({
+  level: env === "development" ? "debug" : "info",
+  format: format.combine(
+    format.timestamp({
+      format: "YYYY-MM-DD HH:mm:ss"
+    }),
+    format.errors({ stack: true }),
+    format.prettyPrint()
+  ),
+  transports: [
+    new transports.Console({
+      level: "info",
+      format: format.combine(
+        format.colorize(),
+        format.printf(
+          info => `${info.timestamp} ${info.level}: ${info.message}`
+        )
+      )
+    }),
+    dailyRotateFileTransport
+  ]
+})
 
 module.exports=logger;

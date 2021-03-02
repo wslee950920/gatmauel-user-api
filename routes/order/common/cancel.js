@@ -16,10 +16,8 @@ const transporter = nodemailer.createTransport({
 });
 
 const { Order, Detail, sequelize } = require("../../../models");
-const logger=require('../../../logger');
 
 module.exports=async(req, res, next)=>{
-    let measure=null;
     const t = await sequelize.transaction();
     try{
         const schema = joi.object().keys({
@@ -35,7 +33,6 @@ module.exports=async(req, res, next)=>{
                 orderId:req.query.orderId
             }
         });
-        measure=order[0].measure;
 
         await Order.update({paid:true},{
             where:{id:order[0].id},
@@ -50,7 +47,7 @@ module.exports=async(req, res, next)=>{
             transaction:t
         });
 
-        if(measure==='kakao'){
+        if(order[0].measure==='kakao'){
             const result=await axios({
                 method:'post',
                 url:"https://kapi.kakao.com/v1/payment/order",
@@ -63,17 +60,17 @@ module.exports=async(req, res, next)=>{
                     tid:order[0].tId
                 }
             });
-            
-            if(result.data.status==='QUIT_PAYMENT'){
-                await t.commit();
-                return res.redirect(`https://${process.env.NODE_ENV==='production'?'www.gatmauel.com':'localhost'}/result?orderId=${order[0].orderId}`);
-            } else{
+
+            if(result.data.status!=='QUIT_PAYMENT'){
                 throw new Error(result.data.status); 
             }
-        } else if(measure==='card'){
-            await t.commit();
-            return res.status(204).end();
         }
+
+        await t.commit();
+        if(order[0].measure==='card'&&req.useragent.isDesktop){
+            return res.end();
+        }
+        return res.redirect(`https://${process.env.NODE_ENV==='production'?'www.gatmauel.com':'localhost'}/result?orderId=${order[0].orderId}`);
     } catch(error){
         await t.rollback();
 
@@ -86,26 +83,11 @@ module.exports=async(req, res, next)=>{
                     </br>
                     <p>${error.message}</p>`,
             },
-            (err) => {
-                if(measure==='kakao'){
-                    if(process.env.NODE_ENV==='production'){
-                        logger.error(err.message);
-                    }
-                    return res.redirect(`https://${process.env.NODE_ENV==='production'?'www.gatmauel.com':'localhost'}/error/cancel`);
-                }
-                else if(measure==='card'){
-                    return next(err);
-                }
+            (err) => {    
+                return next(err); 
             }
         );
-
-        if(measure==='kakao'){
-            if(process.env.NODE_ENV==='production'){
-                logger.error(error.message);
-            }
-            return res.redirect(`https://${process.env.NODE_ENV==='production'?'www.gatmauel.com':'localhost'}/error/cancel`);
-        } else if(measure==='card'){
-            return next(error);
-        }
+        
+        return next(error);
     }
 }

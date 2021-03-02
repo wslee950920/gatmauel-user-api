@@ -18,7 +18,7 @@ module.exports=async(req, res, next)=>{
             if(order[0].paid){
                 return res.status(410).end();
             } else{
-                return next((order[0].deli?'delivery':'pickup'));
+                return res.status(409).send((order[0].deli?'delivery':'pickup'));
             }
         }
 
