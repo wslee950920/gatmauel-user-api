@@ -13,14 +13,12 @@ module.exports = async (req, res, next) => {
   }
 
   const {content}=req.body;
+  const hashtags = content.match(/#[^\s]*/g);
+  const review=await Review.findByPk(id);
+  const prev=await review.getHashtags();
+  
   const t = await sequelize.transaction();
-  try {
-    const review=await Review.findByPk(id,
-    {
-      transaction:t
-    });
-
-    const hashtags = content.match(/#[^\s]*/g);
+  try {  
     if (hashtags) {
       const temp = await Promise.all(
         hashtags.map((tag) =>
@@ -31,6 +29,18 @@ module.exports = async (req, res, next) => {
         )
       );
       await review.addHashtags(temp.map((r) => r[0]),{
+        transaction:t
+      });
+
+      if(prev.length>0){
+        const deleted=prev.filter((value)=>!hashtags.map((tag)=>
+          tag.slice(1).toLowerCase()).includes(value.title));
+        await review.removeHashtags(deleted, {
+            transaction:t
+        });
+      }
+    } else{
+      await review.removeHashtags(prev, {
         transaction:t
       });
     }

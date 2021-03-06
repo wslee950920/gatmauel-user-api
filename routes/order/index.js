@@ -34,7 +34,7 @@ router.post('/pay/later', check, later, alim, finish);
 
 router.get('/result/:orderId', result);
 
-router.post('/distance', distance);
+router.get('/distance', distance);
 router.get('/recent', isLoggedIn, recent);
 
 router.get('/cancel', cancel);

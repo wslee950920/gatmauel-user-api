@@ -5,7 +5,7 @@ module.exports=async (req, res, next)=>{
     const schema = joi.object().keys({
         goal:joi.string().required(),
     });
-    const verify = schema.validate(req.body);
+    const verify = schema.validate(req.query);
     if (verify.error) {
         return res.status(400).end(); 
     }
@@ -16,7 +16,7 @@ module.exports=async (req, res, next)=>{
                 'Authorization' : `KakaoAK ${process.env.KAKAO_REST_API_KEY}`
             },
             params:{
-                query:req.body.goal
+                query:req.query.goal
             }
         });
         if(kakao){
