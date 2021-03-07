@@ -2,7 +2,7 @@ const { Order, Detail, Food } = require("../../models");
 
 module.exports=async(req, res, next)=>{
     try{
-        const order=await Order.findAll({
+        const order=await Order.findOne({
             where:{
                 orderId:req.params.orderId
             },
@@ -11,21 +11,21 @@ module.exports=async(req, res, next)=>{
             },
             paranoid: false
         });
-        if(order.length!==1){
+        if(!order){
             return res.status(400).end();
         }
-        if(order[0].deletedAt){
-            if(order[0].paid){
+        if(order.deletedAt){
+            if(order.paid){
                 return res.status(410).end();
             } else{
-                return res.status(409).send((order[0].deli?'delivery':'pickup'));
+                return res.status(409).send((order.deli?'delivery':'pickup'));
             }
         }
 
         const details=await Detail.findAll({
             attributes:['num'],
             where:{
-                orderId:order[0].id
+                orderId:order.id
             },
             include:{
                 model:Food,
@@ -33,7 +33,7 @@ module.exports=async(req, res, next)=>{
         });
 
         return res.json({
-            order:order[0],
+            order,
             details
         });
     } catch(error){

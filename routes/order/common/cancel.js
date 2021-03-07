@@ -28,26 +28,26 @@ module.exports=async(req, res, next)=>{
             throw new Error(verify.error); 
         }
 
-        const order=await Order.findAll({
+        const order=await Order.findOne({
             where:{
                 orderId:req.query.orderId
             }
         });
 
         await Order.update({paid:true},{
-            where:{id:order[0].id},
+            where:{id:order.id},
             transaction:t
         });
         await Order.destroy({ 
-            where: { id:order[0].id }, 
+            where: { id:order.id }, 
             transaction: t 
         });
         await Detail.destroy({
-            where:{orderId:order[0].id}, 
+            where:{orderId:order.id}, 
             transaction:t
         });
 
-        if(order[0].measure==='kakao'){
+        if(order.measure==='kakao'){
             const result=await axios({
                 method:'post',
                 url:"https://kapi.kakao.com/v1/payment/order",
@@ -57,7 +57,7 @@ module.exports=async(req, res, next)=>{
                 },
                 params:{
                     cid:'TC0ONETIME',
-                    tid:order[0].tId
+                    tid:order.tId
                 }
             });
 
@@ -67,10 +67,10 @@ module.exports=async(req, res, next)=>{
         }
 
         await t.commit();
-        if(order[0].measure==='card'&&req.useragent.isDesktop){
+        if(order.measure==='card'&&req.useragent.isDesktop){
             return res.end();
         }
-        return res.redirect(`https://${process.env.NODE_ENV==='production'?'www.gatmauel.com':'localhost'}/result?orderId=${order[0].orderId}`);
+        return res.redirect(`https://${process.env.NODE_ENV==='production'?'www.gatmauel.com':'localhost'}/result?orderId=${order.orderId}`);
     } catch(error){
         await t.rollback();
 

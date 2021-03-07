@@ -31,17 +31,17 @@ module.exports=async(req, res, next)=>{
 
     const {nickname, phone, email}=req.body;
     try{
-        const user=await User.findAll({
+        const user=await User.findOne({
             where:{
                 nick:nickname,
                 phone,
                 email
             }
         });
-        if(user.length!==1){
+        if(!user){
             return res.status(404).end();
         }
-        if(user[0].provider!=='local'){
+        if(user.provider!=='local'){
             return res.status(403).end();
         }
 
@@ -51,7 +51,7 @@ module.exports=async(req, res, next)=>{
         transporter.sendMail(
             {
               from: "no-reply@gatmauel.com",
-              to: user[0].email,
+              to: user.email,
               subject: "갯마을 비밀번호 초기화",
               html: `<p>갯마을 비밀번호가 [${newPassword}]로 초기화되었습니다.</p>
                     <p>보안을 위해 비밀번호를 변경해주세요.</p>
@@ -72,7 +72,7 @@ module.exports=async(req, res, next)=>{
             hashedPassword
         }, {
             where:{
-                id:user[0].id
+                id:user.id
             }
         });
 

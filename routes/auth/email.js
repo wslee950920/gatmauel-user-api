@@ -14,18 +14,18 @@ module.exports=async(req, res, next)=>{
 
     const {nickname, phone}=req.body;
     try{
-        const user=await User.findAll({
+        const user=await User.findOne({
             where:{
                 nick:nickname,
                 phone
             }
         });
-        if(user.length!==1){
+        if(!user){
             return res.status(404).end();
         }
 
-        const index=user[0].email.indexOf('@');
-        return res.json({email:user[0].email.substr(0, index-3)+'***'+user[0].email.substr(index, user[0].email.length)});
+        const index=user.email.indexOf('@');
+        return res.json({email:user.email.substr(0, index-3)+'***'+user.email.substr(index, user.email.length)});
     } catch(error){
         return next(error);
     }

@@ -16,7 +16,7 @@ module.exports=async(req, res, next)=>{
             throw new Error(verify.error); 
         }
 
-        const order=await Order.findAll({
+        const order=await Order.findOne({
             where:{
                 orderId
             }
@@ -31,9 +31,9 @@ module.exports=async(req, res, next)=>{
             },
             params:{
                 cid:'TC0ONETIME',
-                tid:order[0].tId,
-                partner_order_id:order[0].orderId,
-                partner_user_id:res.locals.user?res.locals.user.nick:('gatmauel'+order[0].phone.slice(-4)),
+                tid:order.tId,
+                partner_order_id:order.orderId,
+                partner_user_id:res.locals.user?res.locals.user.nick:('gatmauel'+order.phone.slice(-4)),
                 pg_token
             }
         });
@@ -42,11 +42,11 @@ module.exports=async(req, res, next)=>{
             aId:result.data.aid,
         }, {
             where:{
-                id:order[0].id
+                id:order.id
             }
         })
         
-        res.locals.payload=order[0];
+        res.locals.payload=order;
 
         return next();
     } catch(error){

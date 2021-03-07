@@ -37,12 +37,12 @@ module.exports=async(req, res, next)=>{
         });
         const paymentData = getPaymentData.data.response;
 
-        const order=await Order.findAll({
+        const order=await Order.findOne({
             where:{
                 orderId:merchant_uid
             }
         });
-        const amountToBePaid = order[0].total; // 결제 되어야 하는 금액
+        const amountToBePaid = order.total; // 결제 되어야 하는 금액
 
         const { amount, status, fail_reason } = paymentData;
         if(status==='paid'&&(amount===amountToBePaid)){

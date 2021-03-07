@@ -28,22 +28,22 @@ module.exports=async(req, res, next)=>{
             throw new Error(verify.error); 
         }
 
-        const order=await Order.findAll({
+        const order=await Order.findOne({
             where:{
                 orderId:req.query.orderId
             }
         });
 
         await Order.destroy({ 
-            where: { id:order[0].id }, 
+            where: { id:order.id }, 
             transaction: t 
         });
         await Detail.destroy({
-            where:{orderId:order[0].id}, 
+            where:{orderId:order.id}, 
             transaction:t
         });
 
-        if(order[0].measure==='kakao'){
+        if(order.measure==='kakao'){
             await axios({
                 method:'post',
                 url:"https://kapi.kakao.com/v1/payment/cancel",
@@ -53,12 +53,12 @@ module.exports=async(req, res, next)=>{
                 },
                 params:{
                     cid:'TC0ONETIME',
-                    tid:order[0].tId,
-                    cancel_amount:order[0].total,
+                    tid:order.tId,
+                    cancel_amount:order.total,
                     cancel_tax_free_amount:0
                 }
             });
-        } else if(order[0].measure==='card'){
+        } else if(order.measure==='card'){
             const getToken=await axios.post('https://api.iamport.kr/users/getToken', {
                 imp_key:process.env.IAMPORT_REST_API_KEY,
                 imp_secret:process.env.IMAPORT_REST_API_SECRET
@@ -70,9 +70,9 @@ module.exports=async(req, res, next)=>{
             const { access_token } = getToken.data.response;
 
             await axios.post('https://api.iamport.kr/payments/cancel',{
-                imp_uid:order[0].tId,
-                merchant_uid:order[0].orderId,
-                checksum:order[0].total,
+                imp_uid:order.tId,
+                merchant_uid:order.orderId,
+                checksum:order.total,
                 reason:'결제 프로세스 실패',
             }, {
                 headers: {
@@ -80,16 +80,16 @@ module.exports=async(req, res, next)=>{
                     "Authorization": `Bearer ${access_token}` // 발행된 액세스 토큰
                 }
             });
-        } else if(order[0].measure==='later'){
+        } else if(order.measure==='later'){
             await t.commit();
-            return next(order[0].measure);
+            return next(order.measure);
         }
 
         await t.commit();
-        if(order[0].measure==='card'&&req.useragent.isDesktop){
+        if(order.measure==='card'&&req.useragent.isDesktop){
             return res.end();
         }
-        return res.redirect(`https://${process.env.NODE_ENV==='production'?'www.gatmauel.com':'localhost'}/result?orderId=${order[0].orderId}`);
+        return res.redirect(`https://${process.env.NODE_ENV==='production'?'www.gatmauel.com':'localhost'}/result?orderId=${order.orderId}`);
     } catch(error){
         await t.rollback();
 
