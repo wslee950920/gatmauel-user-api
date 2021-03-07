@@ -60,21 +60,11 @@ if (process.env.NODE_ENV === "production") {
   sessionOption.proxy = true;
   sessionOption.cookie.secure = true;
 
-  const cluster = new Redis.Cluster([
-    {
-      port: process.env.REDIS_PORT,
-      host: process.env.REDIS_HOST_1,
-    },
-    {
-      port: process.env.REDIS_PORT,
-      host: process.env.REDIS_HOST_2,
-    },
-    {
-      port: process.env.REDIS_PORT,
-      host: process.env.REDIS_HOST_3,
-    },
-  ]);
-  sessionOption.store = new RedisStore({ client: cluster });
+  const client = new Redis({
+    host:process.env.REDIS_HOST,
+    port:process.env.REDIS_PORT
+  })
+  sessionOption.store = new RedisStore({ client });
 }
 app.use(session(sessionOption));
 app.use(passport.initialize());
