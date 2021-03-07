@@ -2,6 +2,7 @@ const joi = require("joi");
 const aws = require("aws-sdk");
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
+const schedule = require("node-schedule");
 
 aws.config.update({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -15,7 +16,7 @@ aws.config.update({
     }),
   });
 
-const { User } = require("../../models");
+const { User, sequelize } = require("../../models");
 
 const kakaoV2= async (req, res, next)=>{
     const schema = joi.object().keys({
@@ -31,6 +32,7 @@ const kakaoV2= async (req, res, next)=>{
     }
 
     const { email, nick, snsId, eVerified, phone } = req.body;
+    const t=await sequelize.transaction();
     try{
         const exUser = await User.findBySns(snsId, "kakao");
         if (exUser) {
@@ -62,12 +64,14 @@ const kakaoV2= async (req, res, next)=>{
               eVerified,
               phone,
               pVerified:true
+            },{
+                transaction:t
             });
             if(!newUser.eVerified){
                 const urlToken = jwt.sign(
                     {
-                      id: user.id,
-                      email: user.email,
+                      id: newUser.id,
+                      email: newUser.email,
                     },
                     process.env.AUTH_SECRET_KEY,
                     {
@@ -75,7 +79,7 @@ const kakaoV2= async (req, res, next)=>{
                     }
                 );
                 // send some mail
-                transporter.sendMail(
+                await transporter.sendMail(
                     {
                         from: "no-reply@gatmauel.com",
                         to: newUser.email,
@@ -90,25 +94,43 @@ const kakaoV2= async (req, res, next)=>{
                                 :'localhost'
                             }/@user/auth/callback?token=${urlToken}</a>
                             <p>위 링크는 3일간 유효합니다.</p>`,
-                    },
-                    (err) => {
-                        return next(err);
                     }
                 );
-            }
 
-            const token = newUser.generateToken(false);
-            const data = newUser.serialize();
-            return res
-                .cookie("access_token", token, {
-                    maxAge: 1000 * 60 * 60 * 24,
-                    httpOnly: true,
-                    secure: false,
-                    signed: true,
-                })
-                .json(data);
+                const end = new Date();
+                end.setDate(end.getDate() + 3);
+                schedule.scheduleJob(end, () => {
+                    User.destroy({ 
+                        where: { 
+                            id:newUser.id,
+                            eVerified:false 
+                        }, 
+                        force: true 
+                    });
+                });
+
+                await t.commit();
+
+                return res.status(403).end();
+            } else{
+                const token = newUser.generateToken(false);
+                const data = newUser.serialize();
+
+                await t.commit();
+
+                return res
+                    .cookie("access_token", token, {
+                        maxAge: 1000 * 60 * 60 * 24,
+                        httpOnly: true,
+                        secure: false,
+                        signed: true,
+                    })
+                    .json(data);
+            }
         }
-    } catch (error) {            
+    } catch (error) {          
+        await t.rollback();
+
         return next(error);
     }
 }

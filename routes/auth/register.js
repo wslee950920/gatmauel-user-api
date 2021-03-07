@@ -16,7 +16,7 @@ const transporter = nodemailer.createTransport({
   }),
 });
 
-const { User } = require("../../models");
+const { User, sequelize } = require("../../models");
 
 const Register = async (req, res, next) => {
   const schema = joi.object().keys({
@@ -31,6 +31,7 @@ const Register = async (req, res, next) => {
   }
 
   const { email, nick, password} = req.body;
+  const t = await sequelize.transaction();
   try {
     const exUser = await User.findByEmail(email, false);
     if (exUser) {
@@ -42,7 +43,7 @@ const Register = async (req, res, next) => {
       nick,
     });
     await user.setPassword(password);
-    await user.save();
+    await user.save({transaction:t});
 
     const token = jwt.sign(
       {
@@ -55,7 +56,7 @@ const Register = async (req, res, next) => {
       }
     );
     // send some mail
-    transporter.sendMail(
+    await transporter.sendMail(
       {
         from: "no-reply@gatmauel.com",
         to: user.email,
@@ -71,9 +72,6 @@ const Register = async (req, res, next) => {
                 :'localhost'
               }/@user/auth/callback?token=${token}</a>
               <p>위 링크는 3일간 유효합니다.</p>`,
-      },
-      (err) => {
-        return next(err);
       }
     );
 
@@ -89,8 +87,12 @@ const Register = async (req, res, next) => {
       });
     });
 
+    await t.commit();
+    
     return res.end();
   } catch (error) { 
+    await t.rollback();
+
     return next(error);
   }
 };
