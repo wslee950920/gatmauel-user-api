@@ -82,6 +82,7 @@ module.exports=async(req, res, next)=>{
             });
         } else if(order.measure==='later'){
             await t.commit();
+            
             return next(order.measure);
         }
 

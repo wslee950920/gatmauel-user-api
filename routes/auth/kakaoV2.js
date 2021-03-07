@@ -37,8 +37,12 @@ const kakaoV2= async (req, res, next)=>{
         const exUser = await User.findBySns(snsId, "kakao");
         if (exUser) {
             if(!exUser.eVerified){
+                await t.rollback();
+
                 return res.status(403).end();
             }
+
+            await t.commit();
 
             const token = exUser.generateToken(false);
             const data = exUser.serialize();
@@ -53,6 +57,8 @@ const kakaoV2= async (req, res, next)=>{
         } else {
             const exEmail=await User.findByEmail(email, false);
             if(exEmail){
+              await t.rollback();
+              
               return res.status(409).end();
             }
             

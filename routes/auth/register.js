@@ -35,6 +35,8 @@ const Register = async (req, res, next) => {
   try {
     const exUser = await User.findByEmail(email, false);
     if (exUser) {
+      await t.rollback();
+
       return res.status(409).end();
     }
 
