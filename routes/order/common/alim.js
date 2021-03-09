@@ -4,8 +4,17 @@ const { Detail, Food } = require("../../../models");
 const {bizSignature}=require('../../../lib/ncpSignature');
 const logger=require('../../../logger');
 
-const makeContent=(orderId, orderDetail, request, address, phone, time, price, nickname, url)=>{
-    return `주문번호 : ${orderId}\n주문내역 : \n${orderDetail}\n요청사항 : ${request}\n배달주소 : ${address}\n전화번호 : ${phone}\n주문시간 : ${time}\n결제금액 : ${price}원\n닉네임 : ${nickname}\n\n${url}`
+const method=(value)=>{
+    if(value==='kakao'){
+        return '카카오페이';
+    } else if(value==='card'){
+        return '카드결제';
+    } else if(value==='later'){
+        return '나중에결제';
+    }
+};
+const makeContent=(orderId, orderDetail, request, address, phone, time, price, method, nickname)=>{
+    return `주문번호 : ${orderId}\n주문내역 : \n${orderDetail}\n요청사항 : ${request}\n배달주소 : ${address}\n전화번호 : ${phone}\n주문시간 : ${time}\n결제금액 : ${price}원\n결제방법 : ${method}\n닉네임 : ${nickname}\n\n`
 }
 const orderTime=(time)=>{
     const temp=new Date(time);
@@ -24,7 +33,8 @@ module.exports=async(req, res, next)=>{
         createdAt, 
         total, 
         customer, 
-        deli }=res.locals.payload;
+        deli,
+        measure }=res.locals.payload;
     try{       
         const details=await Detail.findAll({
             attributes:['num'],
@@ -39,7 +49,7 @@ module.exports=async(req, res, next)=>{
 
         await axios.post(`https://sens.apigw.ntruss.com/alimtalk/v2/services/${process.env.NAVER_BIZ_SERVICE_ID}/messages`,{
             plusFriendId:"@갯마을바지락칼국수보쌈",
-            templateCode:"AlimTalk",
+            templateCode:"gatmauel10",
             messages:[{
                 to:'01020770883',
                 content:makeContent(
@@ -52,9 +62,15 @@ module.exports=async(req, res, next)=>{
                     phone,
                     orderTime(createdAt),
                     total,
+                    method(measure),
                     customer,
-                    `https://www.gatmauel.com/result?orderId=${orderId}`
-                )
+                ),
+                buttons:[{
+                    type:'WL',
+                    name:'주문정보 확인하기',
+                    linkMobile:`https://www.gatmauel.com/result?orderId=${orderId}`,
+                    linkPc:`https://www.gatmauel.com/result?orderId=${orderId}`,
+                }]
             }]
         },{
             headers:{
@@ -67,7 +83,7 @@ module.exports=async(req, res, next)=>{
 
         await axios.post(`https://sens.apigw.ntruss.com/alimtalk/v2/services/${process.env.NAVER_BIZ_SERVICE_ID}/messages`,{
             plusFriendId:"@갯마을바지락칼국수보쌈",
-            templateCode:"AlimTalk",
+            templateCode:"gatmauel10",
             messages:[{
                 to:phone,
                 content:makeContent(
@@ -80,10 +96,16 @@ module.exports=async(req, res, next)=>{
                     phone,
                     orderTime(createdAt),
                     total,
-                    customer,
-                    `https://www.gatmauel.com/result?orderId=${orderId}`
-                )
-            }]
+                    method(measure),
+                    customer
+                ),
+                buttons:[{
+                    type:'WL',
+                    name:'주문정보 확인하기',
+                    linkMobile:`https://www.gatmauel.com/result?orderId=${orderId}`,
+                    linkPc:`https://www.gatmauel.com/result?orderId=${orderId}`,
+                }]
+            }],
         },{
             headers:{
                 'Content-Type': 'application/json; charset=utf-8',

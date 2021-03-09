@@ -13,7 +13,7 @@ const isEnd=(page, count)=>{
 module.exports = async (req, res, next) => {
   const schema = joi.object().keys({
     hashtag: joi.string().required(),
-    page:joi.number().required()
+    page:joi.number().integer().min(1).required(),
   });
   const result = schema.validate(req.query);
   if (result.error) {
