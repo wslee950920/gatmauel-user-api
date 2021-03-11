@@ -19,7 +19,7 @@ const Login = (req, res, next) => {
         .cookie("access_token", result.token, {
           maxAge: result.maxAge,
           httpOnly: true,
-          secure: false,
+          secure: true,
           signed: true,
         })
         .json(result.data);

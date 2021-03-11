@@ -50,7 +50,7 @@ const kakaoV2= async (req, res, next)=>{
                 .cookie("access_token", token, {
                     maxAge: 1000 * 60 * 60 * 24,
                     httpOnly: true,
-                    secure: false,
+                    secure: true,
                     signed: true,
                 })
                 .json(data);
@@ -128,7 +128,7 @@ const kakaoV2= async (req, res, next)=>{
                     .cookie("access_token", token, {
                         maxAge: 1000 * 60 * 60 * 24,
                         httpOnly: true,
-                        secure: false,
+                        secure: true,
                         signed: true,
                     })
                     .json(data);
