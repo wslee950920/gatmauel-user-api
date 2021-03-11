@@ -1,6 +1,16 @@
+const joi=require('joi');
+
 const { Order, Detail, Food } = require("../../models");
 
 module.exports=async(req, res, next)=>{
+    const schema = joi.object().keys({
+        orderId:joi.string().max(10).required(),
+    });
+    const result = schema.validate(req.params);
+    if (result.error) {
+        return res.status(400).end();
+    }
+
     try{
         const order=await Order.findOne({
             where:{
@@ -12,7 +22,7 @@ module.exports=async(req, res, next)=>{
             paranoid: false
         });
         if(!order){
-            return res.status(400).end();
+            return res.status(404).end();
         }
         if(order.deletedAt){
             if(order.paid){
